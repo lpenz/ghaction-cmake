@@ -1,0 +1,28 @@
+---
+name: ghaction-cmake
+description: 'Build and test using cmake'
+inputs:
+  dependencies:
+    description: 'Dependencies as Debian packages to install'
+    default: ''
+  cc:
+    description: 'Compiler'
+    default: 'gcc'
+  cflags:
+    description: 'CFLAGS'
+    default: ''
+  cxxflags:
+    description: 'CXXFLAGS'
+    default: ''
+  ctestflags:
+    description: 'Flags for ctest'
+    default: ''
+  coverage:
+    description: 'Send results to codecov: true or false'
+    default: 'false'
+  analyzer:
+    description: 'Analyzer to use on files after exporting commands'
+    default: ''
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
