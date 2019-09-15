@@ -1,10 +1,22 @@
 #!/bin/bash
 
-function install_dependencies {
-    if [ -n "$INPUT_DEPENDENCIES" ]; then
+if [ -n "$INPUT_DEPENDENCIES" ]; then
+    function install_dependencies {
         su - -c "apt-get install --no-install-recommends -y $INPUT_DEPENDENCIES"
-    fi
-}
+    }
+else
+    function install_dependencies {
+        :
+    }
+fi
+
+CC="$INPUT_CC"
+CFLAGS="$INPUT_CFLAGS"
+CXXFLAGS="$INPUT_CXXFLAGS"
+if [ -n "${INPUT_COVERAGE}" ]; then
+    CFLAGS+=" --coverage"
+    CXXFLAGS+=" --coverage"
+fi
 
 ctest=( ctest )
 if [ -n "$INPUT_CTESTFLAGS" ]; then
@@ -21,12 +33,15 @@ if [ -n "$INPUT_ANALYZER" ]; then
     elif [ "$INPUT_ANALYZER" = "clang-format" ]; then
         find "$PWD" \( -name '*.[ch]' -o -name '*.cc' \) -exec clang-format -i {} +
         git diff --exit-code
+    else
+        echo "Error: unknown analyzer $INPUT_ANALYZER" >&2
+        exit 1
     fi
 else
     install_dependencies
-    export CC="$INPUT_CC"
-    export CFLAGS="$INPUT_CFLAGS"
-    export CXXFLAGS="$INPUT_CXXFLAGS"
+    export CC="$CC"
+    export CFLAGS="$CFLAGS"
+    export CXXFLAGS="$CXXFLAGS"
 
     SRCDIR="$PWD"
     mkdir /tmp/_build /tmp/_install
@@ -37,6 +52,11 @@ else
     make install
 
     if [ -n "${INPUT_COVERAGE}" ]; then
-        bash <(curl -s https://codecov.io/bash)
+        if [ "$INPUT_COVERAGE" = codecov ]; then
+            bash <(curl -s https://codecov.io/bash)
+        else
+            echo "Error: unknown coverage service $INPUT_COVERAGE" >&2
+            exit 1
+        fi
     fi
 fi

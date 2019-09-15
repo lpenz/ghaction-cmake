@@ -18,8 +18,8 @@ inputs:
     description: 'Flags for ctest'
     default: ''
   coverage:
-    description: 'Send results to codecov: true or false'
-    default: 'false'
+    description: 'Send coverage data to this service (only codecov supported)'
+    default: ''
   analyzer:
     description: 'Analyzer to use on files after exporting commands'
     default: ''
