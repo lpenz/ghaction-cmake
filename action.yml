@@ -1,6 +1,9 @@
 ---
 name: ghaction-cmake
 description: 'Build and test using cmake'
+branding:
+  icon: 'compass'
+  color: 'blue'
 inputs:
   dependencies:
     description: 'Dependencies as Debian packages to install'
