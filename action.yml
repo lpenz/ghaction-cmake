@@ -5,6 +5,9 @@ branding:
   icon: 'compass'
   color: 'blue'
 inputs:
+  directory:
+    description: 'cd to this directory before building'
+    default: ''
   dependencies:
     description: 'Dependencies as Debian packages to install'
     default: ''

@@ -25,6 +25,10 @@ fi
 
 set -e -x
 
+if [ -n "$INPUT_DIRECTORY" ]; then
+    cd "$INPUT_DIRECTORY"
+fi
+
 if [ -n "$INPUT_ANALYZER" ]; then
     if [ "$INPUT_ANALYZER" = "clang-tidy" ]; then
         install_dependencies
