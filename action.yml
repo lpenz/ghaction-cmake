@@ -32,6 +32,9 @@ inputs:
   cmake_install:
     description: 'Enable running install in build directory after build'
     default: false
+  check_environment:
+    description: 'Dont use CMakeLists.txt, only verifier underlying docker image'
+    default: false
 runs:
   using: 'docker'
   image: 'docker://docker.pkg.github.com/rainlabs-eu/cmake-quality-action/environment:latest'
