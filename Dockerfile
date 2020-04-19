@@ -15,5 +15,5 @@ RUN set -x -e; \
         # ctest -D ExperimentalMemCheck
         valgrind
 
-ADD entrypoint.py /usr/local/bin/entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint"]
+COPY entrypoint.py /usr/local/bin/entrypoint
+ENTRYPOINT "/usr/local/bin/entrypoint"
