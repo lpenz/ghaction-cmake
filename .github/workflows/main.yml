@@ -7,8 +7,3 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: docker build .
-  omnilint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/omnilint:latest
