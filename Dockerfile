@@ -6,7 +6,7 @@ RUN set -x -e; \
         # build
         cmake pkg-config make \
         # GCC compilers
-        gcc-5 g++5 gcc-6 g++-6 gcc-7 g++-7 gcc-8 g++-8 gcc-9 g++-9 \
+        gcc-5 g++5 gcc-6 g++-6 gcc-7 g++-7 gcc-8 g++-8 \
         # Clang compilers
         clang-4.0 clang-5.0 clang-6.0 clang-7 clang-8 clang-9 \
         # Coverage report upload
