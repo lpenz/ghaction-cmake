@@ -1,40 +1,64 @@
 ---
 name: cmake-quality
-description: 'Build and test using cmake, focused on simple, source code first libraries and components'
+description: "Build and test using cmake, focused on simple, source code first libraries and components"
 branding:
-  icon: 'compass'
-  color: 'orange'
+  icon: "compass"
+  color: "orange"
 inputs:
-  output_directory:
-    description: 'CMake build directory'
-    default: 'out'
+  verbose:
+    description: "Print extra information when running"
+    default: "true"
+    required: true
+  build_directory:
+    description: "CMake build directory"
+    default: "./out"
+    required: true
   source_directory:
-    description: 'CMake source directory'
-    default: ''
+    description: "CMake source directory"
+    default: "."
+    required: true
   dependencies:
-    description: 'Extra dependencies as apt packages to install'
-    default: ''
-  cmake_configure_commands:
-    description: 'CMake configure commands (appended to default one)'
-    default: ''
-  cmake_build_targets:
-    description: 'CMake configure commands (appended to default one, use none to skip building)'
-    default: 'all'
+    description: "Extra dependencies as apt packages to install"
+    required: false
+  cmake_configure_environment:
+    description: "Extra variables to set in environemnt when running configure step, for example CC=gcc, CXX=g++"
+    default: ""
+    required: false
+  cmake_configure_sanitize:
+    description: "One of clang sanitizers compile with, i.e. address, memory, undefined, dataflow, safe-stack"
+    required: false
+  cmake_configure_extra_args:
+    description: "CMake configure command extra args (appended to default ones)"
+    required: false
+  cmake_build_enable:
+    description: "Call CMake for building"
+    default: "true"
+    required: true
+  cmake_build_options:
+    description: "CMake build options"
+    required: true
+    default: ""
   ctest_enable:
-    description: 'Enable running ctest in build directory after build'
-    default: false
+    description: "Enable running ctest in build directory after build"
+    default: "false"
+    required: true
   ctest_flags:
-    description: 'CTest extra flags to pass'
-    default: ''
+    description: "CTest extra flags to pass"
+    required: false
   ctest_coverage:
-    description: 'CTest colected coverage data upload'
-    default: ''
-  cmake_install:
-    description: 'Enable running install in build directory after build'
-    default: false
-  check_environment:
-    description: 'Dont use CMakeLists.txt, only verifier underlying docker image'
-    default: false
+    description: "CTest collect and upload coverage"
+    default: "false"
+    required: true
+  cmake_install_enable:
+    description: "Call CMake for installing"
+    default: "false"
+    required: true
+  cmake_install_directory:
+    description: "Where to install, mandatory if cmake_install_enable=true"
+    required: false
+  cmake_install_options:
+    description: "Other cmake --install ... <options>"
+    required: false
 runs:
-  using: 'docker'
-  image: 'docker://docker.pkg.github.com/rainlabs-eu/cmake-quality-action/environment:latest'
+  using: "docker"
+  image: "docker://rainlabs/cmake-quality-action:latest"

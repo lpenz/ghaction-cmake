@@ -2,17 +2,55 @@
 name: CI
 on: push
 jobs:
-  build:
+  build-docker:
+    name: "Build and Publish rainlabs/cmake-quality-action"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: rainlabs-eu/cmake-quality-action/environment
+          username: rainlabs
+          password: ${{ secrets.RAINLABS_DOCKERHUB_TOKEN }}
+          repository: rainlabs/cmake-quality-action
           tag_with_ref: true
-      - uses: ./
+
+  test-action-demo:
+    name: "Test action with local demo project"
+    needs: build-docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
         with:
-          check_environment: true
+          path: action
+      - uses: actions/checkout@master
+        with:
+          path: demo
+      - uses: ./action/
+        with:
+          dependencies: clang-8 clang-9
+          cmake_configure_environment: "CC=clang-9 CXX=clang++-9"
+          source_directory: demo
+          build_directory: demo-out
+
+  test-action-googletest:
+    name: "Test action with google test"
+    needs: build-docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          path: action
+      - uses: actions/checkout@master
+        with:
+          repository: google/googletest
+          path: googletest 
+      - uses: ./action/
+        with:
+          dependencies: clang-8 clang-9
+          cmake_configure_environment: "CC=clang-9 CXX=clang++-9"
+          source_directory: googletest
+          build_directory: googletest-out
+          cmake_configure_extra_args: "-Dgmock_build_tests=ON"
+          ctest_enable: true
+          cmake_install_enable: true
+          cmake_install_directory: googletest-install
