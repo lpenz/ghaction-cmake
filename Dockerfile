@@ -12,8 +12,7 @@ RUN set -x -e; \
         # Coverage report upload
         curl \
         # ctest -D ExperimentalMemCheck
-        valgrind \
-
+        valgrind
 
 ADD entrypoint.py /usr/local/bin/entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
