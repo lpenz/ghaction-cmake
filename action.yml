@@ -34,4 +34,4 @@ inputs:
     default: false
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker.pkg.github.com/rainlabs-eu/cmake-quality-action/environment:latest'
