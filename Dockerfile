@@ -1,25 +1,19 @@
-FROM debian:buster
+FROM ubuntu:18.04
 
-# install debian packages:
-ENV DEBIAN_FRONTEND=noninteractive
 RUN set -x -e; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         # build
-        cmake pkg-config make gcc \
-        # coverage report
+        cmake pkg-config make \
+        # GCC compilers
+        install gcc-5 g++5 gcc-6 g++-6 gcc-7 g++-7 gcc-8 g++-8 gcc-9 g++-9 \
+        # Clang compilers
+        install clang-4.0 clang-5.0 clang-6.0 clang-7 clang-8 clang-9 \
+        # Coverage report upload
         curl \
-        # clang and tools
-        clang clang-tidy clang-format \
-        # used by clang-format
-        git \
         # ctest -D ExperimentalMemCheck
         valgrind \
-        # base system (su)
-        util-linux
 
-# setup su for dep installation
-RUN sed -i '/pam_rootok.so$/aauth sufficient pam_permit.so' /etc/pam.d/su
 
-ADD entrypoint /usr/local/bin/entrypoint
+ADD entrypoint.py /usr/local/bin/entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint"]

@@ -1,34 +1,37 @@
 ---
-name: ghaction-cmake
-description: 'Build and test using cmake'
+name: cmake-quality
+description: 'Build and test using cmake, focused on simple, source code first libraries and components'
 branding:
   icon: 'compass'
-  color: 'blue'
+  color: 'orange'
 inputs:
-  directory:
-    description: 'cd to this directory before building'
+  output_directory:
+    description: 'CMake build directory'
+    default: 'out'
+  source_directory:
+    description: 'CMake source directory'
     default: ''
   dependencies:
-    description: 'Dependencies as Debian packages to install'
+    description: 'Extra dependencies as apt packages to install'
     default: ''
-  cc:
-    description: 'Compiler'
-    default: 'gcc'
-  cflags:
-    description: 'CFLAGS'
+  cmake_configure_commands:
+    description: 'CMake configure commands (appended to default one)'
     default: ''
-  cxxflags:
-    description: 'CXXFLAGS'
+  cmake_build_targets:
+    description: 'CMake configure commands (appended to default one, use none to skip building)'
+    default: 'all'
+  ctest_enable:
+    description: 'Enable running ctest in build directory after build'
+    default: false
+  ctest_flags:
+    description: 'CTest extra flags to pass'
     default: ''
-  ctestflags:
-    description: 'Flags for ctest'
+  ctest_coverage:
+    description: 'CTest colected coverage data upload'
     default: ''
-  coverage:
-    description: 'Send coverage data to this service (only codecov supported)'
-    default: ''
-  analyzer:
-    description: 'Analyzer to use on files after exporting commands'
-    default: ''
+  cmake_install:
+    description: 'Enable running install in build directory after build'
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
