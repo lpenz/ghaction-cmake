@@ -6,4 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - run: docker build .
+      - uses: luke142367/Docker-Lint-Action@v1.0.1
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: rainlabs-eu/cmake-quality-action/environment
+          tag_with_ref: true
