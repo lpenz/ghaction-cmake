@@ -3,7 +3,8 @@
 import subprocess
 import json
 import os
-print json.dumps(os.environ)
+
+print(json.dumps(os.environ.copy(), indent=4))
 
 # if [ -n "$INPUT_DEPENDENCIES" ]; then
 #     function install_dependencies {
