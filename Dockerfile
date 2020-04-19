@@ -16,4 +16,4 @@ RUN set -x -e; \
         valgrind
 
 COPY entrypoint.py /usr/local/bin/entrypoint
-ENTRYPOINT "/usr/local/bin/entrypoint"
+ENTRYPOINT ["/usr/bin/python3", "/usr/local/bin/entrypoint"]
