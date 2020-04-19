@@ -13,3 +13,6 @@ jobs:
           registry: docker.pkg.github.com
           repository: rainlabs-eu/cmake-quality-action/environment
           tag_with_ref: true
+      - uses: ./
+        with:
+          check_environment: true
