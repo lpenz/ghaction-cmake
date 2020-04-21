@@ -70,7 +70,7 @@ for cenv in cmake_configure_environment.split():
     if verbose:
         eprint("Adding entry to call environment:", cenv)
 
-    var, val = cenv.split("=")
+    var, val = cenv.split("=", 1)
 
     if verbose:
         eprint("callenv[", var, "] = ", val)
