@@ -1,106 +1,28 @@
-# ghaction-cmake
+# ghaction-cmake-quality
 
-This is a github action for projects that use cmake. It builds, tests
-and installs the project. It can also be used to to run the tests with
-valgrind and clang sanitizers, and to run clang-tidy and clang-format
-on the source.
+This is a github action for projects that use cmake. It builds, tests and optionally installs the project. It can also be used to to run the tests with valgrind and clang sanitizers. Since it also generated compiled commands it can be used as pre-step for other processing (clang-tidy etc).
 
+# Inputs
+Inputs needed for action are very limited, with decent defaults. Refer to [action.yml](action.yml) for documentations.
 
-## Inputs
-
-### `dependencies`
-
-Project dependencies as Debian packages to install in the container.
-
-### `cc`
-
-Compiler to use
-
-### `cflags`, `cxxflags`
-
-CFLAGS and CXXFLAGS environment variables. They can be used to enable
-sanitizers, coverage, etc.
-
-### `ctestflags`
-
-Flags for ctest. `-D ExperimentalMemCheck`, for instance, enable test
-execution under valgrind.
-
-### `coverage`
-
-Set to the coverage service where data should be sent.
-
-Only `codecov` is supported at the moment.
-
-### `analyzer`
-
-When set, perform the specified analysis instead of the regular build+test+install task.
-
-Supported options: `clang-tidy` and `clang-format`.
+# Examples
+[Workflow for verifying this repo master](.github/workflows/main.yml) includes example of building, testing and installing this repo (test-action-demo) and GoogleTest (test-action-googletest).
 
 
-## Example:
-
-The workflow below is a part of the one in [execpermfix](https://github.com/lpenz/execpermfix):
-
-```yml
----
-name: CI
-on: push
-jobs:
-  build:
-    strategy:
-        matrix:
-          cc: [ gcc, clang ]
+```
+test-action:
+    name: "Test action with google test"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
+      - uses: rainlabs-eu/ghaction-cmake-quality@v1
         with:
-          cc: ${{ matrix.cc }}
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          coverage: codecov
-  valgrind:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          ctestflags: '-D ExperimentalMemCheck'
-  clang-sanitizers:
-    name: build with clang -fsanitize
-    strategy:
-        matrix:
-          cflags:
-            - -fsanitize=address
-            - -fsanitize=memory
-            - -fsanitize=undefined
-            - -fsanitize=dataflow
-            - -fsanitize=safe-stack
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          cc: clang
-          cflags: ${{ matrix.cflags }}
-  clang-format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          analyzer: clang-format
-  clang-analyzers:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          analyzer: clang-tidy
+          dependencies: clang-9 # not actually needed, most of common gcc/clang is included in Docker running this action
+          cmake_configure_environment: "CC=clang-9 CXX=clang++-9" # Select compilers
+          source_directory: . 
+          build_directory: out
+          cmake_configure_extra_args: "-Dgmock_build_tests=ON" # For example enable extra tests
+          ctest_enable: true # Run tests with ctest
+          cmake_install_enable: true
+          cmake_install_directory: googletest-install
 ```
