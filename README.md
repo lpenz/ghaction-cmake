@@ -12,9 +12,9 @@ on the source.
 
 Project dependencies as Debian packages to install in the container.
 
-### `cc`
+### `cc`, `cxx`
 
-Compiler to use
+C compiler and C++ compilers to use, respectively.
 
 ### `cflags`, `cxxflags`
 

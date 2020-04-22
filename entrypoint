@@ -12,6 +12,7 @@ fi
 
 CC="$INPUT_CC"
 CFLAGS="$INPUT_CFLAGS"
+CXX="$INPUT_CXX"
 CXXFLAGS="$INPUT_CXXFLAGS"
 if [ -n "${INPUT_COVERAGE}" ]; then
     CFLAGS+=" --coverage"
@@ -45,6 +46,7 @@ else
     install_dependencies
     export CC="$CC"
     export CFLAGS="$CFLAGS"
+    export CXX="$CXX"
     export CXXFLAGS="$CXXFLAGS"
 
     SRCDIR="$PWD"

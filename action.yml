@@ -12,11 +12,14 @@ inputs:
     description: 'Dependencies as Debian packages to install'
     default: ''
   cc:
-    description: 'Compiler'
+    description: 'C Compiler'
     default: 'gcc'
   cflags:
     description: 'CFLAGS'
     default: ''
+  cxx:
+    description: 'C++ Compiler'
+    default: 'g++'
   cxxflags:
     description: 'CXXFLAGS'
     default: ''
