@@ -6,7 +6,7 @@ RUN set -x -e; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         # build
-        cmake pkg-config make gcc \
+        cmake pkg-config make gcc g++ \
         # coverage report
         curl \
         # clang and tools
