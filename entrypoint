@@ -34,9 +34,9 @@ if [ -n "$INPUT_ANALYZER" ]; then
     if [ "$INPUT_ANALYZER" = "clang-tidy" ]; then
         install_dependencies
         cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
-        find "$PWD" \( -name '*.[ch]' -o -name '*.cc' \) -exec clang-tidy -p "$PWD" {} +
+        find "$PWD" \( -name '*.[ch]' -o -name '*.cc' -o -name '*.[ch]pp' \) -exec clang-tidy -p "$PWD" {} +
     elif [ "$INPUT_ANALYZER" = "clang-format" ]; then
-        find "$PWD" \( -name '*.[ch]' -o -name '*.cc' \) -exec clang-format -i {} +
+        find "$PWD" \( -name '*.[ch]' -o -name '*.cc' -o -name '*.[ch]pp' \) -exec clang-format -i {} +
         git diff --exit-code
     else
         echo "Error: unknown analyzer $INPUT_ANALYZER" >&2
