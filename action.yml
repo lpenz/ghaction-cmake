@@ -23,6 +23,9 @@ inputs:
   cxxflags:
     description: 'CXXFLAGS'
     default: ''
+  cmakeflags:
+    description: 'Flags for cmake'
+    default: ''
   ctestflags:
     description: 'Flags for ctest'
     default: ''

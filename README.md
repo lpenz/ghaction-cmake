@@ -21,6 +21,11 @@ C compiler and C++ compilers to use, respectively.
 CFLAGS and CXXFLAGS environment variables. They can be used to enable
 sanitizers, coverage, etc.
 
+### `cmakeflags`
+
+Flags for cmake. `-DSOME_OPTION=On`, for instance, to pass an option
+to CMakeLists.txt
+
 ### `ctestflags`
 
 Flags for ctest. `-D ExperimentalMemCheck`, for instance, enable test

@@ -24,6 +24,12 @@ if [ -n "$INPUT_CTESTFLAGS" ]; then
     ctest+=( "$INPUT_CTESTFLAGS" )
 fi
 
+cmake=( cmake )
+if [ -n "$INPUT_CMAKEFLAGS" ]; then
+    IFS=' ' read -r -a cmakeflags <<< "$INPUT_CMAKEFLAGS"
+    cmake+=( "${cmakeflags[@]}" )
+fi
+
 set -e -x
 
 if [ -n "$INPUT_DIRECTORY" ]; then
@@ -52,7 +58,7 @@ else
     SRCDIR="$PWD"
     mkdir /tmp/_build /tmp/_install
     cd /tmp/_build
-    cmake -DCMAKE_INSTALL_PREFIX=/tmp/_install "$SRCDIR"
+    "${cmake[@]}" -DCMAKE_INSTALL_PREFIX=/tmp/_install "$SRCDIR"
     make VERBOSE=1
     "${ctest[@]}"
     make install
