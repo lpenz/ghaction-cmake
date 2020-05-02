@@ -41,7 +41,7 @@ Only `codecov` is supported at the moment.
 
 When set, perform the specified analysis instead of the regular build+test+install task.
 
-Supported options: `clang-tidy` and `clang-format`.
+Supported options: `cppcheck`, `iwyu`, `clang-tidy` and `clang-format`.
 
 
 ## Example:

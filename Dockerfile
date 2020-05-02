@@ -9,8 +9,10 @@ RUN set -x -e; \
         cmake pkg-config make gcc g++ \
         # coverage report
         curl \
-        # clang and tools
+        # clang
         clang clang-tidy clang-format \
+        # C/C++ linters \
+        cppcheck iwyu \
         # used by clang-format
         git \
         # ctest -D ExperimentalMemCheck

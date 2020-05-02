@@ -37,10 +37,15 @@ if [ -n "$INPUT_DIRECTORY" ]; then
 fi
 
 if [ -n "$INPUT_ANALYZER" ]; then
-    if [ "$INPUT_ANALYZER" = "clang-tidy" ]; then
+    if [ "$INPUT_ANALYZER" = "cppcheck" ]; then
         install_dependencies
-        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
-        run-clang-tidy -quiet
+        cmake "-DCMAKE_CXX_CPPCHECK=cppcheck" .
+    elif [ "$INPUT_ANALYZER" = "iwyu" ]; then
+        install_dependencies
+        cmake "-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=iwyu" .
+    elif [ "$INPUT_ANALYZER" = "clang-tidy" ]; then
+        install_dependencies
+        cmake "-DCMAKE_CXX_CLANG_TIDY=clang-tidy" .
     elif [ "$INPUT_ANALYZER" = "clang-format" ]; then
         find "$PWD" \( -name '*.[ch]' -o -name '*.cc' -o -name '*.[ch]pp' \) -exec clang-format -i {} +
         git diff --exit-code
