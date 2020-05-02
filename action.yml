@@ -1,39 +1,38 @@
 ---
 name: ghaction-cmake
-description: 'Build and test using cmake'
+description: |
+  Swiss army tool for projects based on cmake
 branding:
   icon: 'compass'
   color: 'blue'
 inputs:
+  dependencies_debian:
+    description: 'Dependencies as Debian packages to install; always used'
+    default: ''
   directory:
-    description: 'cd to this directory before building'
-    default: ''
-  dependencies:
-    description: 'Dependencies as Debian packages to install'
-    default: ''
-  cc:
-    description: 'C Compiler'
-    default: 'gcc'
-  cflags:
-    description: 'CFLAGS'
-    default: ''
-  cxx:
-    description: 'C++ Compiler'
-    default: 'g++'
-  cxxflags:
-    description: 'CXXFLAGS'
+    description: 'cd to this directory; always used'
     default: ''
   cmakeflags:
-    description: 'Flags for cmake'
+    description: 'Initial flags for cmake; extended by presets'
     default: ''
-  ctestflags:
-    description: 'Flags for ctest'
+  build_command:
+    description: 'Build command to use; override presets'
     default: ''
-  coverage:
-    description: 'Send coverage data to this service (only codecov supported)'
+  test_command:
+    description: 'Test command to use; override presets'
     default: ''
-  analyzer:
-    description: 'Analyzer to use on files after exporting commands'
+  post_command:
+    description: 'Command to run after tests; override presets'
+    default: ''
+  preset:
+    description: |
+      Preset to use:
+      - cppcheck
+      - iwyu
+      - clang-tidy
+      - clang-sanitize-*
+      - valgrind
+      - coverage
     default: ''
 runs:
   using: 'docker'

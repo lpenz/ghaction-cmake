@@ -1,111 +1,288 @@
 # ghaction-cmake
 
-This is a github action for projects that use cmake. It builds, tests
-and installs the project. It can also be used to to run the tests with
-valgrind and clang sanitizers, and to run clang-tidy and clang-format
-on the source.
+**ghaction-cmake** is a github action for projects that
+use [cmake](https://cmake.org/). By default, it builds, tests and
+installs the project - but it can as easily run linters, tests with
+coverage, valgrind or sanitizers, by using [presets](#preset).
+
+
+## Phases
+
+*ghaction-cmake* runs in phases:
+- *setup*: optionally install dependencies and go to a specified
+  directory.
+- *cmake*: run cmake in an empty directory, pointing to the source
+  directory, with all other arguments appended. This guarantees that
+  out-of-tree builds work.
+- *build*: customizable, `make VERBOSE=1` by default (build commands are shown).
+- *test*: customizable, `ctest .` by default.
+- *post*: customizable, empty by default.
 
 
 ## Inputs
 
-### `dependencies`
+### `preset`
 
-Project dependencies as Debian packages to install in the container.
+Set a preset, more information on the [Presets](#presets) section below.
 
-### `cc`, `cxx`
+- Phase: can changes the default command of any number of phases.
 
-C compiler and C++ compilers to use, respectively.
+### `dependencies_debian`
 
-### `cflags`, `cxxflags`
+Project dependencies as Debian packages to install in the container,
+separated by spaces.
 
-CFLAGS and CXXFLAGS environment variables. They can be used to enable
-sanitizers, coverage, etc.
+- Phase: *setup*
+- Preset behavior: unnafected.
+
+### `directory`
+
+Use this directory as the source dir for cmake. Mostly used when the
+cmake project is in a subdirectory of the repository.
+
+- Phase: *setup*
+- Preset behavior: unnafected.
 
 ### `cmakeflags`
 
 Flags for cmake. `-DSOME_OPTION=On`, for instance, to pass an option
-to CMakeLists.txt
+to CMakeLists.txt.
 
-### `ctestflags`
+- Phase: *cmake*
+- Preset behavior: most presets append to this input.
 
-Flags for ctest. `-D ExperimentalMemCheck`, for instance, enable test
-execution under valgrind.
+### `build_command`
 
-### `coverage`
+Custom test command. Defaults to `make VERBOSE=1`.
 
-Set to the coverage service where data should be sent.
+- Phase: *build*
+- Preset behavior: some presets change or remove the default build
+  command.
 
-Only `codecov` is supported at the moment.
+### `test_command`
 
-### `analyzer`
+Custom test command. Defaults to `ctest .` if no preset is used.
 
-When set, perform the specified analysis instead of the regular build+test+install task.
+- Phase: *test*
+- Preset behavior: some presets change or remove the default test
+  command.
 
-Supported options: `cppcheck`, `iwyu`, `clang-tidy` and `clang-format`.
+### `post_command`
+
+Custom command to run after tests. Empty by default, if no preset is used.
+
+- Phase: *post*
+- Preset behavior: some presets add a default post command.
+
+## <a name="presets"></a> Presets
+
+`cmake` is a very versatile tool that can do a lot of different things given
+the appropriate arguments. To make matrix builds easier, *ghaction-cmake*
+provides **presets** that configure those options for specific modes.
+
+The available presets are:
+- *cppcheck*: run [cppcheck](http://cppcheck.sourceforge.net/) static
+  analysis.
+  - *cmake*: append `-DCMAKE_C/CXX_CPPCHECK=cppcheck` to `cmakeflags`.
+  - *test*: clear default.
+- *iwyu*: run
+  [include-what-you-use](https://include-what-you-use.org/) static
+  analysis.
+  - *cmake*: append `-DCMAKE_C/CXX_INCLUDE_WHAT_YOU_USE=iwyu` to `cmakeflags`.
+  - *test*: clear default.
+- *install*: test installation.
+  - *cmake*: append `'-DCMAKE_INSTALL_PREFIX'` to `cmakeflags`.
+  - *test*: use `make install` as a test.
+  - *post*: use `find` to show all installed files.
+- *clang-tidy*: run
+  [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) static
+  analysis.
+  - *cmake*: append `-DCMAKE_C/CXX_CLANG_TIDY=clang-tidy` to `cmakeflags`.
+  - *test*: clear default.
+- *clang-sanitize-&lt;sanitizer&gt;*: compile with one of the
+  [clang sanitizers](https://clang.llvm.org/docs/index.html) and
+  run the tests.
+  - *cmake*: append `-DCMAKE_C/CXX_COMPILER=clang/clang++ -DCMAKE_C/CXX_FLAGS=-fno-omit-frame-pointer -fsanitize=<sanitizer>` to `cmakeflags`.
+- *valgrind*: run the tests with [valgrind](https://valgrind.org/).
+  - *test*: set default test phase to `ctest -DExperimentalMemCheck .`
+- *coverage*: runs the tests with coverage.
+  - *cmake*: append `-DCMAKE_C/CXX_FLAGS=--coverage` to `cmakeflags`
+  - *post*: set default post phase to run
+    [lcov](http://ltp.sourceforge.net/coverage/lcov.php) with
+    `lcov -c -d . -o lcov.info`
+
+  This preset works well with github actions that upload coverage data
+  results to online services like
+  [codecov](https://github.com/marketplace/actions/codecov) and
+  [coveralls](https://github.com/marketplace/actions/coveralls-github-action).
+  The [example](#example) below shows how that can be done.
 
 
-## Example:
+The table below summarizes the changes specific to each preset:
 
-The workflow below is a part of the one in [execpermfix](https://github.com/lpenz/execpermfix):
+<table>
+<tr>
+<th>Preset</th>
+<th>cmake</th>
+<th>test</th>
+<th>post</th>
+</tr>
+<tr>
+<td>cppcheck</td>
+<td><pre>-DCMAKE_C/CXX_CPPCHECK=cppcheck</pre></td>
+<td>(delete)</td>
+<td></td>
+</tr>
+<tr>
+<td>iwyu</td>
+<td><pre>-DCMAKE_C/CXX_INCLUDE_WHAT_YOU_USE=iwyu</pre></td>
+<td>(delete)</td>
+<td></td>
+</tr>
+<tr>
+<td>install</td>
+<td><pre>-DCMAKE_INSTALL_PREFIX=/tmp/_install</pre></td>
+<td><pre>make install</pre></td>
+<td><pre>find /tmp_install -type f</pre></td>
+</tr>
+<tr>
+<td>clang&#8209;tidy</td>
+<td><pre>-DCMAKE_C/CXX_CLANG_TIDY=clang-tidy</pre></td>
+<td>(delete)</td>
+<td></td>
+</tr>
+<tr>
+<td>clang&#8209;sanitizer&#8209;&lt;sanitizer&gt;</td>
+<td>
+<pre>-DCMAKE_C/CXX_COMPILER=clang/clang++
+-DCMAKE_C/CXX_FLAGS=-fno-omit-frame-pointer -fsanitize=&lt;sanitizer&gt;</pre>
+</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>valgrind</td>
+<td></td>
+<td><pre>-DExperimentalMemCheck</pre></td>
+<td></td>
+</tr>
+<tr>
+<td>coverage</td>
+<td><pre>-DCMAKE_C/CXX_FLAGS=--coverage</pre></td>
+<td></td>
+<td><pre>lcov -c -d . -o lcov.info</pre></td>
+</tr>
+</table>
+
+Keep in mind that presets override the defaults, and are overriden by
+the other more specific inputs `build_command`, `test_command` and
+`post_command`.
+
+
+## <a name="example"></a> Example:
+
+The workflow below shows how to use presets in a matrix job:
 
 ```yml
 ---
 name: CI
-on: push
+on: [push, pull_request]
 jobs:
-  build:
+  # Regular C build with two compilers, using the environment:
+  build_using_compiler_in_environment:
     strategy:
         matrix:
-          cc: [ gcc, clang ]
+          compiler:
+            - gcc
+            - clang
     runs-on: ubuntu-latest
+    # We can use cmakeflags for this, or we can just use
+    # regular environment variables, as they are already
+    # supported by github actions:
+    env:
+      - CC: ${{ matrix.compiler }}
     steps:
       - uses: actions/checkout@master
       - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          cc: ${{ matrix.cc }}
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          coverage: codecov
-  valgrind:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:latest
-        with:
-          ctestflags: '-D ExperimentalMemCheck'
-  clang-sanitizers:
-    name: build with clang -fsanitize
+  # Regular C build with two compilers, using cmakeflags:
+  build_using_compiler_in_cmakeflags:
     strategy:
         matrix:
-          cflags:
-            - -fsanitize=address
-            - -fsanitize=memory
-            - -fsanitize=undefined
-            - -fsanitize=dataflow
-            - -fsanitize=safe-stack
+          compiler:
+            - gcc
+            - clang
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      # This examples uses the appropriate cmakeflags
+      - uses: docker://lpenz/ghaction-cmake:latest
+        with:
+          cmakeflags: ${{ format('-DCMAKE_C_COMPILER={0}', matrix.compiler) }}
+  # Coverage with codecov:
+  codecov:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: docker://lpenz/ghaction-cmake:latest
         with:
-          cc: clang
-          cflags: ${{ matrix.cflags }}
-  clang-format:
+          preset: coverage
+      # ghaction-cmake works well with the github action
+      # provided by codecov:
+      - uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
+  # Coverage with coveralls:
+  coveralls:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: docker://lpenz/ghaction-cmake:latest
         with:
-          analyzer: clang-format
-  clang-analyzers:
+          preset: coverage
+      # ghaction-cmake works well with the github action
+      # provided by coveralls if you pass path-to-lcov:
+      - uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: lcov.info
+  # Static analyzers:
+  linters:
+    strategy:
+        matrix:
+          preset: [ cppcheck, iwyu, clang-tidy ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: docker://lpenz/ghaction-cmake:latest
         with:
-          analyzer: clang-tidy
+          preset: ${{ matrix.preset }}
+  # Tests with various sanitizers and valgrind:
+  test:
+    strategy:
+        matrix:
+          preset:
+            - clang-sanitizer-address
+            - clang-sanitizer-memory
+            - clang-sanitizer-undefined
+            - clang-sanitizer-dataflow
+            - clang-sanitizer-safe-stack
+            - valgrind
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: docker://lpenz/ghaction-cmake:latest
+        with:
+          preset: ${{ matrix.preset }}
+  # Test installation:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: docker://lpenz/ghaction-cmake:latest
+        with:
+          preset: install
 ```
+
+Note that the file above splits static analyzers from sanitizers, but
+they can actually be in the same matrix job, as the rest of the
+parameters is the same.
