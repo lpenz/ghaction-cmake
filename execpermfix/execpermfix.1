@@ -1,0 +1,62 @@
+.TH "execpermfix" 1 "" ""
+
+
+.SH NAME
+
+.P
+execpermfix \- fixes executable permissions
+
+.SH SYNOPSIS
+
+.P
+\fBexecpermfix\fR [\-h]
+
+.P
+\fBexecpermfix\fR [\-V]
+
+.P
+\fBexecpermfix\fR [\-v] [\-n] <files>
+
+.SH DESCRIPTION
+
+.P
+\fBexecpermfix\fR is a program that fixes executable permissions.
+
+.P
+It detects which files are executable by checking their names and contents, and
+gives the executable permission to everyone that has read permissions.
+
+.SH OPTIONS
+
+.P
+\fB\-h\fR Help.
+
+.P
+\fB\-V\fR Version information.
+
+.P
+\fB\-v\fR Verbose mode.
+
+.P
+\fB\-n\fR Dry\-run: no operation is performed. Use with \fI\-v\fR to see files with
+"wrong" permissions.
+
+.SH AUTHOR
+
+.P
+Written by Leandro Penz
+
+.SH REPORTING BUGS
+
+.P
+https://github.com/lpenz/execpermfix/issues/new
+
+.SH COPYRIGHT
+
+.P
+Copyright (C) 2009 Leandro Lisboa Penz <lpenz@lpenz.org>
+
+.SH SEE ALSO
+
+.P
+\fBchmod\fR(1)

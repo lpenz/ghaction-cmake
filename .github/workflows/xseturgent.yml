@@ -1,0 +1,35 @@
+---
+name: xseturgent
+on: push
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          dependencies_debian: libx11-dev xvfb xauth xterm
+          preset: coverage
+          working-directory: xseturgent
+  tests:
+    strategy:
+        matrix:
+          preset:
+            - cppcheck
+            - iwyu
+            - clang-tidy
+            - install
+            - clang-sanitizer-address
+            - clang-sanitizer-memory
+            - clang-sanitizer-undefined
+            - clang-sanitizer-dataflow
+            - clang-sanitizer-safe-stack
+            - valgrind
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          dependencies_debian: libx11-dev xvfb xauth xterm
+          preset: ${{ matrix.preset }}
+          working-directory: xseturgent

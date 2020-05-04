@@ -1,0 +1,57 @@
+.TH "xseturgent" 1 "" ""
+
+
+.SH NAME
+
+.P
+xseturgent \- manipulate window urgency hint in X11
+
+
+.SH SYNOPSIS
+
+.P
+\fBxseturgent\fR [\-h]
+
+.P
+\fBxseturgent\fR [\-V]
+
+.P
+\fBxseturgent\fR [\-i <windowid>] [\-t <set/reset/toggle>]
+
+
+.SH DESCRIPTION
+
+.P
+\fBxseturgent\fR is a program that can set, reset or toggle the
+urgency hint of a window in X11.
+
+
+.SH OPTIONS
+
+.P
+\fB\-h\fR Help.
+
+.P
+\fB\-V\fR Version information.
+
+.P
+\fB\-v\fR Verbose mode.
+
+.P
+\fB\-i <windowid>\fR Specify the id of the window. The environment
+variable WINDOWID is used by default; if that is not present and this
+option is not used, xseturgent fails.
+
+.P
+\fB\-t <set/reset/toggle>\fR What to do with the urgency hint.
+
+
+.SH AUTHOR
+
+.P
+Written by Leandro Lisboa Penz, based on the work of Hiltjo Posthuma.
+
+.SH SEE ALSO
+
+.BR xprop(1)
+.BR xwininfo(1)

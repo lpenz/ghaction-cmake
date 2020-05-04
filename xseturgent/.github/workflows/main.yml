@@ -1,0 +1,46 @@
+---
+name: CI
+on: [ push, pull_request ]
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: docker://lpenz/ghaction-cmake:v0.8
+        with:
+          dependencies_debian: libx11-dev xvfb xterm
+          preset: coverage
+      - uses: codecov/codecov-action@v0.1
+        with:
+          fail_ci_if_error: true
+  tests:
+    strategy:
+        matrix:
+          preset:
+            - cppcheck
+            - iwyu
+            - clang-tidy
+            - install
+            - clang-sanitizer-address
+            - clang-sanitizer-memory
+            - clang-sanitizer-undefined
+            - clang-sanitizer-dataflow
+            - clang-sanitizer-safe-stack
+            - valgrind
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: docker://lpenz/ghaction-cmake:v0.8
+        with:
+          dependencies_debian: libx11-dev xvfb xterm
+          preset: ${{ matrix.preset }}
+  clang-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: DoozyX/clang-format-lint-action@v0.5
+  omnilint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: docker://lpenz/omnilint:latest

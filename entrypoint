@@ -63,7 +63,7 @@ class Entrypoint(object):
                 'su - -c "apt-get install --no-install-recommends -y {}"'.
                 format(dependencies))
         # Directory:
-        directory = self.extenv.get('INPUT_WORKING_DIRECTORY')
+        directory = self.extenv.get('INPUT_WORKING-DIRECTORY')
         if directory:
             print('+ cd ' + directory)
             os.chdir(directory)
