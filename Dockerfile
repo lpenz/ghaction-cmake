@@ -17,7 +17,9 @@ RUN set -x -e; \
         # Coverage report upload
         curl \
         # ctest -D ExperimentalMemCheck
-        valgrind
+        valgrind \
+        # Using boost as reference for tests
+        libboost-all-dev
 
 COPY entrypoint.py /usr/local/bin/entrypoint
 ENTRYPOINT ["/usr/bin/python3", "-u", "/usr/local/bin/entrypoint"]
