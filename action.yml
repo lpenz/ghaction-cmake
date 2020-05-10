@@ -1,7 +1,7 @@
 ---
 name: ghaction-cmake
 description: |
-  Swiss army tool for projects based on cmake
+  Swiss army knife for projects based on cmake
 branding:
   icon: 'compass'
   color: 'blue'
