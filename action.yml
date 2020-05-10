@@ -1,5 +1,5 @@
 ---
-name: ghaction-cmake
+name: cmake swiss army knife
 description: |
   Swiss army knife for projects based on cmake
 branding:
@@ -7,10 +7,10 @@ branding:
   color: 'blue'
 inputs:
   dependencies_debian:
-    description: 'Dependencies as Debian packages to install; always used'
+    description: 'Dependencies as Debian packages to install; used if defined'
     default: ''
   directory:
-    description: 'cd to this directory; always used'
+    description: 'cd to this directory; used if defined'
     default: ''
   cmakeflags:
     description: 'Initial flags for cmake; extended by presets'
@@ -33,6 +33,7 @@ inputs:
       - clang-sanitize-*
       - valgrind
       - coverage
+      - install
     default: ''
 runs:
   using: 'docker'
