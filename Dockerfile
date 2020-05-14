@@ -19,7 +19,9 @@ RUN set -x -e; \
         # ctest -D ExperimentalMemCheck
         valgrind \
         # Using boost as reference for tests
-        libboost-all-dev
+        libboost-all-dev \
+        # git for listing files in changes
+        git
 
 COPY entrypoint.py /usr/local/bin/entrypoint
 ENTRYPOINT ["/usr/bin/python3", "-u", "/usr/local/bin/entrypoint"]
