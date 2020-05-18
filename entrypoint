@@ -70,8 +70,8 @@ class Entrypoint(object):
                 self.cmd_cmake += ' -DCMAKE_CXX_COMPILER=clang++'
                 for lang in ['C', 'CXX']:
                     self.cmd_cmake += (
-                        ' -DCMAKE_{}_FLAGS=-fno-omit-frame-pointer -fsanitize={}'
-                        .format(lang, sanitizer))
+                        ' -DCMAKE_{}_FLAGS="-fno-omit-frame-pointer'
+                        ' -fsanitize={}"'.format(lang, sanitizer))
             elif preset == 'install':
                 self.cmd_cmake += ' -DCMAKE_INSTALL_PREFIX=/tmp/_install'
                 self.cmd_test = 'make install'
