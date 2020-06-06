@@ -1,3 +1,9 @@
+[![marketplace](https://img.shields.io/badge/marketplace-cmake--swiss--army--knife-blue?logo=github)](https://github.com/marketplace/actions/cmake-swiss-army-knife)
+[![CI](https://github.com/lpenz/ghaction-cmake/workflows/CI/badge.svg)](https://github.com/lpenz/ghaction-cmake/actions)
+[![github](https://img.shields.io/github/v/release/lpenz/ghaction-cmake?include_prereleases&label=release&logo=github)](https://github.com/lpenz/ghaction-cmake/releases)
+[![docker](https://img.shields.io/docker/v/lpenz/ghaction-cmake?label=release&logo=docker&sort=semver)](https://hub.docker.com/repository/docker/lpenz/ghaction-cmake)
+
+
 # ghaction-cmake
 
 **ghaction-cmake** is a github action for projects that
