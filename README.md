@@ -209,7 +209,7 @@ jobs:
       - CC: ${{ matrix.compiler }}
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
   # Regular C build with two compilers, using cmakeflags:
   build_using_compiler_in_cmakeflags:
     strategy:
@@ -221,7 +221,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       # This examples uses the appropriate cmakeflags
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           cmakeflags: ${{ format('-DCMAKE_C_COMPILER={0}', matrix.compiler) }}
   # Coverage with codecov:
@@ -229,7 +229,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: coverage
       # ghaction-cmake works well with the github action
@@ -242,7 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: coverage
       # ghaction-cmake works well with the github action
@@ -259,7 +259,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: ${{ matrix.preset }}
   # Tests with various sanitizers and valgrind:
@@ -276,7 +276,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: ${{ matrix.preset }}
   # Test installation:
@@ -284,7 +284,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: docker://lpenz/ghaction-cmake:v0.8
+      - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: install
 ```
