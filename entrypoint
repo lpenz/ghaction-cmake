@@ -59,7 +59,7 @@ class Entrypoint(object):
         self.cmd_cmake = 'cmake . '
         self.cmd_cmake += self.extenv.get('INPUT_CMAKEFLAGS', '')
         self.cmd_build = 'make VERBOSE=1'
-        self.cmd_test = 'ctest .'
+        self.cmd_test = 'ctest --output-on-failure .'
 
         # Presets, overriding or complementing defaults:
         preset = self.extenv.get('INPUT_PRESET')

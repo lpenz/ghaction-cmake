@@ -15,7 +15,7 @@ coverage, valgrind or sanitizers, by using [presets](#preset).
   directory, with all other arguments appended. This guarantees that
   out-of-tree builds work.
 - *build*: customizable, `make VERBOSE=1` by default (build commands are shown).
-- *test*: customizable, `ctest .` by default.
+- *test*: customizable, `ctest --output-on-failure .` by default.
 - *post*: customizable, empty by default.
 
 
@@ -61,7 +61,7 @@ Custom test command. Defaults to `make VERBOSE=1`.
 
 ### `test_command`
 
-Custom test command. Defaults to `ctest .` if no preset is used.
+Custom test command. Defaults to `ctest --output-on-failure .` if no preset is used.
 
 - Phase: *test*
 - Preset behavior: some presets change or remove the default test
@@ -104,7 +104,7 @@ The available presets are:
   run the tests.
   - *cmake*: append `-DCMAKE_C/CXX_COMPILER=clang/clang++ -DCMAKE_C/CXX_FLAGS=-fno-omit-frame-pointer -fsanitize=<sanitizer>` to `cmakeflags`.
 - *valgrind*: run the tests with [valgrind](https://valgrind.org/).
-  - *test*: set default test phase to `ctest -DExperimentalMemCheck .`
+  - *test*: set default test phase to `ctest -DExperimentalMemCheck --output-on-failure .`
 - *coverage*: runs the tests with coverage.
   - *cmake*: append `-DCMAKE_C/CXX_FLAGS=--coverage` to `cmakeflags`
   - *post*: set default post phase to run
