@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e -x
+
+docker run --rm -t -u "$UID" -w "$PWD" \
+       -v "${PWD}:${PWD}" \
+       -v "/var/run/docker.sock:/var/run/docker.sock" "$@" \
+       ghaction-cmake
