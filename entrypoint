@@ -47,7 +47,7 @@ class Entrypoint(object):
         dependencies = self.extenv.get('INPUT_DEPENDENCIES_DEBIAN')
         if dependencies:
             self.runcmd(
-                'su - -c apt-get install --no-install-recommends -y {}'.format(
+                'su - -c "apt-get install --no-install-recommends -y {}"'.format(
                     dependencies))
         # Directory:
         directory = self.extenv.get('INPUT_DIRECTORY')
