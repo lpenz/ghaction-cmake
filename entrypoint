@@ -16,10 +16,22 @@ class Entrypoint(object):
         self.cmd_test = None
         self.cmd_post = None
 
-    def runcmd(self, cmd):
+    def runcmd(self, cmd, logfile=None):
         print('+ {}'.format(cmd))
         sys.stdout.flush()
-        p = subprocess.Popen(cmd, shell=True)
+        p = subprocess.Popen(cmd,
+                             shell=True,
+                             encoding='utf-8',
+                             stderr=subprocess.STDOUT,
+                             stdout=subprocess.PIPE)
+        stdout = open(os.dup(p.stdout.fileno()), newline='')
+        # ^ Makes newlines in apt-get work
+        logfile = logfile or '/dev/null'
+        with open(logfile, 'w', encoding='utf-8') as logfd:
+            for line in stdout:
+                sys.stdout.write(line)
+                if logfile:
+                    logfd.write(line)
         p.wait()
         if p.returncode != 0:
             sys.stderr.write('> Error {} while running {}\n'.format(
@@ -35,9 +47,10 @@ class Entrypoint(object):
             'post': self.cmd_post,
         }
         for phasename, phasecmd in phases.items():
+            logfile = os.path.join('/tmp/{}.log'.format(phasename))
             if not phasecmd:
                 print('- Skipping {} phase'.format(phasename))
-            elif not self.runcmd(phasecmd):
+            elif not self.runcmd(phasecmd, logfile=logfile):
                 return False
         return True
 
@@ -89,14 +102,18 @@ class Entrypoint(object):
                     if preset == 'cppcheck':
                         self.cmd_cmake += (
                             ' -DCMAKE_{}_CPPCHECK=cppcheck'.format(lang))
+                        self.cmd_test = ''
                     elif preset == 'iwyu':
                         self.cmd_cmake += (
                             ' -DCMAKE_{}_INCLUDE_WHAT_YOU_USE=iwyu'.format(
                                 lang))
+                        self.cmd_test = ('! grep -q'
+                                         ' "Warning: include-what-you-use"'
+                                         ' /tmp/build.log')
                     elif preset == 'clang-tidy':
                         self.cmd_cmake += (
                             ' -DCMAKE_{}_CLANG_TIDY=clang-tidy'.format(lang))
-                self.cmd_test = ''
+                        self.cmd_test = ''
 
         # The other inputs that override presets:
 
