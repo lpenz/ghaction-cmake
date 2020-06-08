@@ -292,3 +292,35 @@ jobs:
 Note that the file above splits static analyzers from sanitizers, but
 they can actually be in the same matrix job, as the rest of the
 parameters is the same.
+
+
+## Using in other environments
+
+This github action is actually a docker image that can be used locally
+or even in [travis-ci](https://travis-ci.com). To do that, first
+download the image from
+[docker hub](https://hub.docker.com/r/lpenz/ghaction-cmake):
+
+```sh
+docker pull lpenz/ghaction:v0.9
+```
+
+Then, run a container in the project's directory, for instance:
+
+```sh
+docker run --rm -t -u "$UID" -w "$PWD" -v "${PWD}:${PWD}" -e INPUT_PRESET=valgrind lpenz/ghaction-cmake:v0.9
+```
+
+It's worth pointing out that action parameters are passed as
+upper case environment variables, prefixed with `INPUT_`.
+
+The following `.travis.yml` runs the same thing in travis-ci:
+
+```yml
+---
+language: generic
+jobs:
+  include:
+    - install: docker pull lpenz/ghaction-cmake:v0.9
+    - script: docker run --rm -t -u "$UID" -w "$PWD" -v "${PWD}:${PWD}" -e INPUT_PRESET=valgrind lpenz/ghaction-cmake:v0.9
+```
