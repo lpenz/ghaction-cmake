@@ -1,12 +1,14 @@
 ---
 name: CI
-on: push
+on: 
+  push:
+  create:
 jobs:
   build-docker:
     name: "Build and Publish rainlabs/cmake-quality-action"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
       - uses: docker/build-push-action@v1
         with:
           username: rainlabs
@@ -19,10 +21,10 @@ jobs:
     needs: build-docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
         with:
           path: action
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
         with:
           path: demo
       - uses: ./action/
@@ -37,10 +39,10 @@ jobs:
     needs: build-docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
         with:
           path: action
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
         with:
           repository: google/googletest
           path: googletest 
