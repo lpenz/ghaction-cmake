@@ -9,6 +9,7 @@ RUN set -x -e; \
     add-apt-repository -n 'ppa:ubuntu-toolchain-r/test'; \
     wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -; \
     add-apt-repository -n "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-10 main"; \
+    apt-add-repository -y -n 'ppa:mhier/libboost-latest'; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         # build
@@ -26,7 +27,7 @@ RUN set -x -e; \
         # ctest -D ExperimentalMemCheck
         valgrind \
         # Using boost as reference for tests
-        libboost-all-dev \
+        libboost1.73-dev \
         # git for listing files in changes
         git
 
