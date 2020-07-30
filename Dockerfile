@@ -2,16 +2,19 @@ FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN set -x -e; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends apt-transport-https ca-certificates gnupg software-properties-common wget; \
+    apt-get -y update; \
+    apt-get -y install --no-install-recommends apt-transport-https ca-certificates gnupg software-properties-common wget; \
+    rm -rf /var/lib/apt/lists/*
+
+RUN set -x -e; \
     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -; \
-    apt-add-repository -n 'https://apt.kitware.com/ubuntu/'; \
-    add-apt-repository -n 'ppa:ubuntu-toolchain-r/test'; \
+    apt-add-repository -y -n 'https://apt.kitware.com/ubuntu/'; \
+    apt-add-repository -y -n 'ppa:ubuntu-toolchain-r/test'; \
     wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -; \
-    add-apt-repository -n "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-10 main"; \
+    apt-add-repository -y -n "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-10 main"; \
     apt-add-repository -y -n 'ppa:mhier/libboost-latest'; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
+    apt-get -y update; \
+    apt-get -y install --no-install-recommends \
         # build
         cmake pkg-config make ninja-build \
         # GCC compilers
@@ -29,7 +32,9 @@ RUN set -x -e; \
         # Using boost as reference for tests
         libboost1.73-dev \
         # git for listing files in changes
-        git
+        git \
+        ; \
+    rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.py /usr/local/bin/entrypoint
 ENTRYPOINT ["/usr/bin/python3", "-u", "/usr/local/bin/entrypoint"]
