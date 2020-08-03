@@ -31,6 +31,8 @@ RUN set -x -e; \
         valgrind \
         # Using boost as reference for tests
         libboost1.73-dev \
+        # zlib needed for some boost components
+        zlib1g-dev \
         # git for listing files in changes
         git \
         ; \
