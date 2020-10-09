@@ -25,6 +25,8 @@ RUN set -x -e; \
         # Clang tools
         clang-tidy-4.0 clang-tidy-5.0 clang-tidy-6.0 clang-tidy-7 clang-tidy-8 clang-tidy-9 clang-tidy-10 \
         clang-format-4.0 clang-format-5.0 clang-format-6.0 clang-format-7 clang-format-8 clang-format-9 clang-format-10 \
+        # LLVM
+        llvm-4.0 llvm-5.0 llvm-6.0 llvm-7 llvm-8 llvm-9 llvm-10 \
         # Coverage report upload
         curl \
         # ctest -D ExperimentalMemCheck
