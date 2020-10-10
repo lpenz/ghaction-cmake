@@ -9,7 +9,7 @@ inputs:
   dependencies_debian:
     description: 'Dependencies as Debian packages to install; used if defined'
     default: ''
-  directory:
+  working-directory:
     description: 'cd to this directory; used if defined'
     default: ''
   cmakeflags:

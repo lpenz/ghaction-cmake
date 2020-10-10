@@ -41,7 +41,7 @@ separated by spaces.
 - Phase: *setup*
 - Preset behavior: unnafected.
 
-### `directory`
+### `working-directory`
 
 Use this directory as the source dir for cmake. Mostly used when the
 cmake project is in a subdirectory of the repository.
@@ -302,7 +302,7 @@ download the image from
 [docker hub](https://hub.docker.com/r/lpenz/ghaction-cmake):
 
 ```sh
-docker pull lpenz/ghaction:v0.9
+docker pull lpenz/ghaction-cmake:v0.9
 ```
 
 Then, run a container in the project's directory, for instance:
