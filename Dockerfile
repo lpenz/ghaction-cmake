@@ -71,5 +71,14 @@ RUN set -x -e; \
     rm -rf "${SOURCES_DIR}" ~/user-config.jam; \
     rm -rf /var/lib/apt/lists/*
 
+# Python packages
+RUN set -x -e; \
+    apt-get -y update; \
+    apt-get -y install --no-install-recommends python3-distutils; \
+    wget -q https://bootstrap.pypa.io/get-pip.py; \
+    python3 get-pip.py; \
+    pip3 install dataclasses Jinja2; \
+    rm -rf get-pip.py /var/lib/apt/lists/*
+
 COPY entrypoint.py /usr/local/bin/entrypoint
 ENTRYPOINT ["/usr/bin/python3", "-u", "/usr/local/bin/entrypoint"]
