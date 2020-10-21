@@ -41,6 +41,16 @@ RUN set -x -e; \
         ; \
     rm -rf /var/lib/apt/lists/*
 
+# x86 cross compilation
+RUN set -x -e; \
+    # dpkg --add-architecture i386; \
+    apt-get -y update; \
+    apt-get -y install --no-install-recommends \
+        g++-multilib \
+        linux-libc-dev-i386-cross \
+    ; \
+    rm -rf /var/lib/apt/lists/*
+
 # Cross compilation for Windows: MinGW, boost, zlib, OpenSSL
 RUN set -x -e; \
     SOURCES_DIR="/home/sources"; \
