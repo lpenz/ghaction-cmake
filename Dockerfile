@@ -82,13 +82,13 @@ RUN set -x -e; \
     rm -rf "${SOURCES_DIR}" ~/user-config.jam; \
     rm -rf /var/lib/apt/lists/*
 
-# Python packages
+# Python packages + Protobuf support for CMake based code generations
 RUN set -x -e; \
     apt-get -y update; \
-    apt-get -y install --no-install-recommends python3-distutils; \
+    apt-get -y install --no-install-recommends python3-distutils protobuf-compiler; \
     wget -q https://bootstrap.pypa.io/get-pip.py; \
     python3 get-pip.py; \
-    pip3 install dataclasses Jinja2; \
+    pip3 install dataclasses Jinja2 protobuf; \
     rm -rf get-pip.py /var/lib/apt/lists/*
 
 COPY entrypoint.py /usr/local/bin/entrypoint
