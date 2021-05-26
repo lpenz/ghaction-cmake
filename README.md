@@ -208,7 +208,7 @@ jobs:
     env:
       - CC: ${{ matrix.compiler }}
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:v0.9
   # Regular C build with two compilers, using cmakeflags:
   build_using_compiler_in_cmakeflags:
@@ -219,7 +219,7 @@ jobs:
             - clang
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       # This examples uses the appropriate cmakeflags
       - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
@@ -228,7 +228,7 @@ jobs:
   codecov:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: coverage
@@ -241,7 +241,7 @@ jobs:
   coveralls:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: coverage
@@ -258,7 +258,7 @@ jobs:
           preset: [ cppcheck, iwyu, clang-tidy ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: ${{ matrix.preset }}
@@ -275,7 +275,7 @@ jobs:
             - valgrind
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: ${{ matrix.preset }}
@@ -283,7 +283,7 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:v0.9
         with:
           preset: install
