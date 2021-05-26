@@ -26,4 +26,4 @@ RUN set -x -e; \
 RUN sed -i '/pam_rootok.so$/aauth sufficient pam_permit.so' /etc/pam.d/su
 
 ADD entrypoint /usr/local/bin/entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint"]
+CMD ["/usr/local/bin/entrypoint"]
