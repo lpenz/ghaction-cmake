@@ -93,7 +93,9 @@ class Entrypoint(object):
                 for lang in ['C', 'CXX']:
                     self.cmd_cmake += (
                         ' -DCMAKE_{}_FLAGS=--coverage'.format(lang))
-                self.cmd_post = 'lcov -c -d . -o lcov.info'
+                self.cmd_post = (
+                        'lcov -c -d . -o lcov.info' +
+                        ' && lcov --list lcov.info')
             elif preset == 'valgrind':
                 self.cmd_test += ' -DExperimentalMemCheck'
             else:
