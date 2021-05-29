@@ -89,6 +89,12 @@ class Entrypoint(object):
                 self.cmd_cmake += ' -DCMAKE_INSTALL_PREFIX=/tmp/_install'
                 self.cmd_test = 'make install'
                 self.cmd_post = 'find /tmp/_install -type f'
+            elif preset == 'cpack':
+                self.cmd_test = 'cpack'
+                self.cmd_post = (
+                    'ls ./*.deb'
+                    '; dpkg --info ./*.deb'
+                    '; dpkg --contents ./*.deb')
             elif preset == 'coverage':
                 for lang in ['C', 'CXX']:
                     self.cmd_cmake += (

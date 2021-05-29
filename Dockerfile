@@ -19,6 +19,8 @@ RUN set -x -e; \
         git \
         # ctest -D ExperimentalMemCheck
         valgrind \
+        # cpack
+        file dpkg-dev \
         # base system (su)
         util-linux
 
