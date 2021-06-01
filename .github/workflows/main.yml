@@ -1,16 +1,16 @@
 ---
 name: CI
-on: [push, pull_request]
+on: [ push, pull_request ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - run: docker build .
   omnilint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: docker://lpenz/omnilint:latest
   docker:
     runs-on: ubuntu-latest
