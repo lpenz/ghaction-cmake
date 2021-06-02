@@ -36,4 +36,5 @@ jobs:
       - uses: docker/build-push-action@v2
         if: ${{ steps.tag.outputs.tag != '' }}
         with:
-          tags: lpenz/ghaction-cmake:${{ steps.tag.outputs.tag }}
+          push: true
+          tags: ${{ github.repository }}:${{ steps.tag.outputs.tag }}
