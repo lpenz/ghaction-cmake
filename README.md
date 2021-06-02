@@ -114,8 +114,6 @@ The available presets are:
 - *cpack*: runs [cpack](https://cmake.org/cmake/help/latest/module/CPack.html)
   after the build.
   - *test*: cpack
-  - *post*: run `dpkg --info ./*.deb` and `dpkg -c ./*.deb`
-    (i.e. assumes a `.deb` was built)
 - *coverage*: runs the tests with coverage.
   - *cmake*: append `-DCMAKE_C/CXX_FLAGS=--coverage` to `cmakeflags`
   - *post*: set default post phase to run
@@ -175,6 +173,12 @@ The table below summarizes the changes specific to each preset:
 <td>valgrind</td>
 <td></td>
 <td><pre>-DExperimentalMemCheck</pre></td>
+<td></td>
+</tr>
+<tr>
+<td>cpack</td>
+<td></td>
+<td><pre>cpack</pre></td>
 <td></td>
 </tr>
 <tr>
