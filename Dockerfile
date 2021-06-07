@@ -43,7 +43,6 @@ RUN set -x -e; \
 
 # x86 cross compilation
 RUN set -x -e; \
-    # dpkg --add-architecture i386; \
     apt-get -y update; \
     apt-get -y install --no-install-recommends \
         g++-multilib \
