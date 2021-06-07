@@ -87,7 +87,16 @@ RUN set -x -e; \
     apt-get -y install --no-install-recommends python3-distutils protobuf-compiler; \
     wget -q https://bootstrap.pypa.io/get-pip.py; \
     python3 get-pip.py; \
-    pip3 install dataclasses Jinja2 protobuf; \
+    pip3 install dataclasses Jinja2 protobuf pytest; \
+    rm -rf get-pip.py /var/lib/apt/lists/*
+
+# Python 3.8
+RUN set -x -e; \
+    apt-get -y update; \
+    apt-get -y install --no-install-recommends python3.8 python3.8-distutils; \
+    wget -q https://bootstrap.pypa.io/get-pip.py; \
+    python3.8 get-pip.py; \
+    python3.8 -m pip install dataclasses Jinja2 protobuf pytest; \
     rm -rf get-pip.py /var/lib/apt/lists/*
 
 COPY entrypoint.py /usr/local/bin/entrypoint
