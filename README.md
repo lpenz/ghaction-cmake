@@ -39,7 +39,7 @@ Project dependencies as Debian packages to install in the container,
 separated by spaces.
 
 - Phase: *setup*
-- Preset behavior: unnafected.
+- Preset behavior: unaffected.
 
 ### `working-directory`
 
@@ -47,7 +47,7 @@ Use this directory as the source dir for cmake. Mostly used when the
 cmake project is in a subdirectory of the repository.
 
 - Phase: *setup*
-- Preset behavior: unnafected.
+- Preset behavior: unaffected.
 
 ### `cmakeflags`
 
