@@ -48,10 +48,15 @@ class Entrypoint(object):
         }
         for phasename, phasecmd in phases.items():
             logfile = os.path.join('/tmp/{}.log'.format(phasename))
-            if not phasecmd:
-                print('- Skipping {} phase'.format(phasename))
-            elif not self.runcmd(phasecmd, logfile=logfile):
-                return False
+            if phasecmd:
+                print('::group::Running phase [{}]: {}'.format(
+                    phasename, phasecmd))
+            else:
+                print('::group::Skipping phase [{}]'.format(phasename))
+            if phasecmd:
+                if not self.runcmd(phasecmd, logfile=logfile):
+                    return False
+            print('::endgroup::')
         return True
 
     def main(self):
@@ -59,9 +64,11 @@ class Entrypoint(object):
         # Dependencies:
         dependencies = self.extenv.get('INPUT_DEPENDENCIES_DEBIAN')
         if dependencies:
+            print('::group::Installing dependencies')
             self.runcmd(
                 'su - -c "apt-get install --no-install-recommends -y {}"'.
                 format(dependencies))
+            print('::endgroup::')
         # Directory:
         directory = self.extenv.get('INPUT_WORKING-DIRECTORY')
         if directory:
