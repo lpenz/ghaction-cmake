@@ -2,18 +2,42 @@
 name: CI
 on: [ push, pull_request ]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: docker build .
   omnilint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: docker://lpenz/omnilint:latest
+  test:
+    strategy:
+        matrix:
+          preset:
+            - cppcheck
+            - install
+            - clang-tidy
+            - clang-sanitizer-address
+            - clang-sanitizer-memory
+            - clang-sanitizer-undefined
+            - clang-sanitizer-dataflow
+            - clang-sanitizer-safe-stack
+            - valgrind
+            - cpack
+            - coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ghaction-cmake
+      - uses: actions/checkout@v2
+        with:
+          repository: lpenz/execpermfix
+          path: execpermfix
+          fetch-depth: 0
+      - uses: ./ghaction-cmake
+        with:
+          preset: ${{ matrix.preset }}
+          working-directory: execpermfix
   dockerhub:
-    needs: [ build, omnilint ]
+    needs: [ omnilint, test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
