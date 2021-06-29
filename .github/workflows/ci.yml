@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/omnilint:latest
+      - uses: docker://lpenz/omnilint:v0.2
   test:
     strategy:
         matrix:
