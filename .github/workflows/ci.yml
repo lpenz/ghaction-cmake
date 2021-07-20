@@ -37,6 +37,14 @@ jobs:
           preset: ${{ matrix.preset }}
           working-directory: execpermfix
   dockerhub:
+    strategy:
+        matrix:
+          platform:
+            - 386
+            - amd64
+            - arm/v6
+            - arm/v7
+            - arm64
     needs: [ omnilint, test ]
     runs-on: ubuntu-latest
     steps:
@@ -50,8 +58,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - uses: docker/build-push-action@v2
-        if: steps.version.outputs.version_tagged != ''
         with:
-          push: true
-          tags: ${{ github.repository }}:${{ steps.version.outputs.version_tagged }}
+          push: ${{ steps.version.outputs.version_tagged != '' }}
+          platforms: linux/${{ matrix.platform }}
+          tags: ${{ github.repository }}:${{ steps.version.outputs.tag_latest_ltrimv }}
 
