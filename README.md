@@ -218,7 +218,7 @@ jobs:
       - CC: ${{ matrix.compiler }}
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
   # Regular C build with two compilers, using cmakeflags:
   build_using_compiler_in_cmakeflags:
     strategy:
@@ -230,7 +230,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # This examples uses the appropriate cmakeflags
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
         with:
           cmakeflags: ${{ format('-DCMAKE_C_COMPILER={0}', matrix.compiler) }}
   # Coverage with codecov:
@@ -238,7 +238,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
         with:
           preset: coverage
       # ghaction-cmake works well with the github action
@@ -251,7 +251,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
         with:
           preset: coverage
       # ghaction-cmake works well with the github action
@@ -268,7 +268,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
         with:
           preset: ${{ matrix.preset }}
   # Tests with various sanitizers and valgrind:
@@ -285,7 +285,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
         with:
           preset: ${{ matrix.preset }}
   # Test installation:
@@ -293,7 +293,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: docker://lpenz/ghaction-cmake:v0.11
+      - uses: docker://lpenz/ghaction-cmake:0.14
         with:
           preset: install
 ```
@@ -311,13 +311,13 @@ download the image from
 [docker hub](https://hub.docker.com/r/lpenz/ghaction-cmake):
 
 ```sh
-docker pull lpenz/ghaction-cmake:v0.11
+docker pull lpenz/ghaction-cmake:0.14
 ```
 
 Then, run a container in the project's directory, for instance:
 
 ```sh
-docker run --rm -t -u "$UID" -w "$PWD" -v "${PWD}:${PWD}" -e INPUT_PRESET=valgrind lpenz/ghaction-cmake:v0.11
+docker run --rm -t -u "$UID" -w "$PWD" -v "${PWD}:${PWD}" -e INPUT_PRESET=valgrind lpenz/ghaction-cmake:0.14
 ```
 
 It's worth pointing out that action parameters are passed as
@@ -330,6 +330,6 @@ The following `.travis.yml` runs the same thing in travis-ci:
 language: generic
 jobs:
   include:
-    - install: docker pull lpenz/ghaction-cmake:v0.11
-    - script: docker run --rm -t -u "$UID" -w "$PWD" -v "${PWD}:${PWD}" -e INPUT_PRESET=valgrind lpenz/ghaction-cmake:v0.11
+    - install: docker pull lpenz/ghaction-cmake:0.14
+    - script: docker run --rm -t -u "$UID" -w "$PWD" -v "${PWD}:${PWD}" -e INPUT_PRESET=valgrind lpenz/ghaction-cmake:0.14
 ```
