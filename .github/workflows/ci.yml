@@ -22,6 +22,7 @@ jobs:
             - valgrind
             - cpack
             - coverage
+            - coverage-clang
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -36,6 +37,7 @@ jobs:
         with:
           preset: ${{ matrix.preset }}
           working-directory: execpermfix
+      - run: find . -type f
   dockerhub:
     needs: [ omnilint, test ]
     runs-on: ubuntu-latest

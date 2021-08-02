@@ -108,6 +108,34 @@ class Entrypoint(object):
                     ' | sed s@^SF:%s/@SF:@ > lcov.info'
                     ' && lcov --list lcov.info'
                     % os.getcwd())
+            elif preset == 'coverage-clang':
+                self.cmd_cmake += ' -DCMAKE_C_COMPILER=clang'
+                self.cmd_cmake += ' -DCMAKE_CXX_COMPILER=clang++'
+                for lang in ['C', 'CXX']:
+                    self.cmd_cmake += (
+                        ' -DCMAKE_{}_FLAGS='
+                        '"-fprofile-instr-generate'
+                        ' -fcoverage-mapping"'.format(lang))
+                self.cmd_test = ('LLVM_PROFILE_FILE="coverage-%p.profraw" ' +
+                                 self.cmd_test)
+                # self.cmd_post = ' '.join([
+                #     'llvm-profdata merge',
+                #     '-output=code.profdata'
+                #     'coverage-*.profraw'
+                #     '&&'
+                #     '
+                # self.cmd_post = (
+                #     'lcov --compat-libtool --capture'
+                #     ' --directory .'
+                #     ' | sed s@^SF:%s/@SF:@ > lcov.info'
+                #     ' && lcov --list lcov.info'
+                #     % os.getcwd())
+                self.cmd_post = (
+                    'grcov . ' +
+                    '-s . ' +
+                    # '--binary-path . ' +
+                    # '--ignore "/*" --ignore "../*" ' +
+                    '--branch --ignore-not-existing ')
             elif preset == 'valgrind':
                 self.cmd_test += ' -DExperimentalMemCheck'
             else:

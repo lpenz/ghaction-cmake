@@ -12,7 +12,7 @@ RUN set -x -e; \
         # coverage report
         curl lcov \
         # clang
-        clang clang-tidy clang-format \
+        clang clang-tidy clang-format llvm grcov \
         # C/C++ linters \
         cppcheck iwyu \
         # used by clang-format
