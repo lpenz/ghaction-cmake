@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 
 # install debian packages:
 ENV DEBIAN_FRONTEND=noninteractive
