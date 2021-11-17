@@ -2,7 +2,7 @@ FROM debian:bullseye
 
 # install debian packages:
 ENV DEBIAN_FRONTEND=noninteractive
-RUN set -x -e; \
+RUN set -e -x; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         # infra

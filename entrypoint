@@ -6,6 +6,14 @@ import re
 import sys
 import os
 import subprocess
+from contextlib import contextmanager
+
+
+@contextmanager
+def ghgroup(group):
+    print('::group::{}'.format(group))
+    yield
+    print('::endgroup::')
 
 
 class Entrypoint(object):
@@ -39,6 +47,9 @@ class Entrypoint(object):
             return False
         return True
 
+    def runcmdsu(self, cmd, *args, **kwargs):
+        return self.runcmd('su - -c "{}"'.format(cmd), *args, **kwargs)
+
     def run(self):
         phases = {
             'cmake': self.cmd_cmake,
@@ -49,26 +60,35 @@ class Entrypoint(object):
         for phasename, phasecmd in phases.items():
             logfile = os.path.join('/tmp/{}.log'.format(phasename))
             if phasecmd:
-                print('::group::Running phase [{}]: {}'.format(
-                    phasename, phasecmd))
+                grp = 'Running phase [{}]: {}'.format(phasename, phasecmd)
             else:
-                print('::group::Skipping phase [{}]'.format(phasename))
-            if phasecmd:
-                if not self.runcmd(phasecmd, logfile=logfile):
-                    return False
-            print('::endgroup::')
+                grp = 'Skipping phase [{}]'.format(phasename)
+            with ghgroup(grp):
+                if phasecmd:
+                    if not self.runcmd(phasecmd, logfile=logfile):
+                        return False
+        return True
+
+    def dependencies(self):
+        dependencies = self.extenv.get('INPUT_DEPENDENCIES_DEBIAN')
+        if not dependencies:
+            return True
+        with ghgroup('Installing dependencies'):
+            if not self.runcmdsu('apt-get update'):
+                print('::error title=dependencies::Error in apt-get update')
+                return False
+            if not self.runcmdsu(
+                    'apt-get install --no-install-recommends -y {}'.
+                    format(dependencies)):
+                print('::error title=dependencies::Error in apt-get install')
+                return False
         return True
 
     def main(self):
         # Setup phase can be executed immediately, it ignores presets:
         # Dependencies:
-        dependencies = self.extenv.get('INPUT_DEPENDENCIES_DEBIAN')
-        if dependencies:
-            print('::group::Installing dependencies')
-            self.runcmd(
-                'su - -c "apt-get install --no-install-recommends -y {}"'.
-                format(dependencies))
-            print('::endgroup::')
+        if not self.dependencies():
+            return False
         # Directory:
         directory = self.extenv.get('INPUT_WORKING-DIRECTORY')
         if directory:
