@@ -11,9 +11,9 @@ from contextlib import contextmanager
 
 @contextmanager
 def ghgroup(group):
-    print('::group::{}'.format(group))
+    print("::group::{}".format(group))
     yield
-    print('::endgroup::')
+    print("::endgroup::")
 
 
 class Entrypoint(object):
@@ -25,25 +25,26 @@ class Entrypoint(object):
         self.cmd_post = None
 
     def runcmd(self, cmd, logfile=None):
-        print('+ {}'.format(cmd))
+        print("+ {}".format(cmd))
         sys.stdout.flush()
-        p = subprocess.Popen(cmd,
-                             shell=True,
-                             encoding='utf-8',
-                             stderr=subprocess.STDOUT,
-                             stdout=subprocess.PIPE)
-        stdout = open(os.dup(p.stdout.fileno()), newline='')
+        p = subprocess.Popen(
+            cmd,
+            shell=True,
+            encoding="utf-8",
+            stderr=subprocess.STDOUT,
+            stdout=subprocess.PIPE,
+        )
+        stdout = open(os.dup(p.stdout.fileno()), newline="")
         # ^ Makes newlines in apt-get work
-        logfile = logfile or '/dev/null'
-        with open(logfile, 'w', encoding='utf-8') as logfd:
+        logfile = logfile or "/dev/null"
+        with open(logfile, "w", encoding="utf-8") as logfd:
             for line in stdout:
                 sys.stdout.write(line)
                 if logfile:
                     logfd.write(line)
         p.wait()
         if p.returncode != 0:
-            sys.stderr.write('> Error {} while running {}\n'.format(
-                p.returncode, cmd))
+            sys.stderr.write("> Error {} while running {}\n".format(p.returncode, cmd))
             return False
         return True
 
@@ -52,17 +53,17 @@ class Entrypoint(object):
 
     def run(self):
         phases = {
-            'cmake': self.cmd_cmake,
-            'build': self.cmd_build,
-            'test': self.cmd_test,
-            'post': self.cmd_post,
+            "cmake": self.cmd_cmake,
+            "build": self.cmd_build,
+            "test": self.cmd_test,
+            "post": self.cmd_post,
         }
         for phasename, phasecmd in phases.items():
-            logfile = os.path.join('/tmp/{}.log'.format(phasename))
+            logfile = os.path.join("/tmp/{}.log".format(phasename))
             if phasecmd:
-                grp = 'Running phase [{}]: {}'.format(phasename, phasecmd)
+                grp = "Running phase [{}]: {}".format(phasename, phasecmd)
             else:
-                grp = 'Skipping phase [{}]'.format(phasename)
+                grp = "Skipping phase [{}]".format(phasename)
             with ghgroup(grp):
                 if phasecmd:
                     if not self.runcmd(phasecmd, logfile=logfile):
@@ -70,17 +71,17 @@ class Entrypoint(object):
         return True
 
     def dependencies(self):
-        dependencies = self.extenv.get('INPUT_DEPENDENCIES_DEBIAN')
+        dependencies = self.extenv.get("INPUT_DEPENDENCIES_DEBIAN")
         if not dependencies:
             return True
-        with ghgroup('Installing dependencies'):
-            if not self.runcmdsu('apt-get update'):
-                print('::error title=dependencies::Error in apt-get update')
+        with ghgroup("Installing dependencies"):
+            if not self.runcmdsu("apt-get update"):
+                print("::error title=dependencies::Error in apt-get update")
                 return False
             if not self.runcmdsu(
-                    'apt-get install --no-install-recommends -y {}'.
-                    format(dependencies)):
-                print('::error title=dependencies::Error in apt-get install')
+                "apt-get install --no-install-recommends -y {}".format(dependencies)
+            ):
+                print("::error title=dependencies::Error in apt-get install")
                 return False
         return True
 
@@ -90,79 +91,81 @@ class Entrypoint(object):
         if not self.dependencies():
             return False
         # Directory:
-        directory = self.extenv.get('INPUT_WORKING-DIRECTORY')
+        directory = self.extenv.get("INPUT_WORKING-DIRECTORY")
         if directory:
-            print('+ cd ' + directory)
+            print("+ cd " + directory)
             os.chdir(directory)
 
         # Defaults, affected by presets:
-        self.cmd_cmake = 'cmake . '
-        self.cmd_cmake += self.extenv.get('INPUT_CMAKEFLAGS', '')
-        self.cmd_build = 'make VERBOSE=1'
-        self.cmd_test = 'ctest --output-on-failure .'
+        self.cmd_cmake = "cmake . "
+        self.cmd_cmake += self.extenv.get("INPUT_CMAKEFLAGS", "")
+        self.cmd_build = "make VERBOSE=1"
+        self.cmd_test = "ctest --output-on-failure ."
 
         # Presets, overriding or complementing defaults:
-        preset = self.extenv.get('INPUT_PRESET')
+        preset = self.extenv.get("INPUT_PRESET")
         if preset:
-            if preset.startswith('clang-sanitize-'):
-                sanitizer = re.match('clang-sanitize-(.*)', preset).group(1)
-                self.cmd_cmake += ' -DCMAKE_C_COMPILER=clang'
-                self.cmd_cmake += ' -DCMAKE_CXX_COMPILER=clang++'
-                for lang in ['C', 'CXX']:
+            if preset.startswith("clang-sanitize-"):
+                sanitizer = re.match("clang-sanitize-(.*)", preset).group(1)
+                self.cmd_cmake += " -DCMAKE_C_COMPILER=clang"
+                self.cmd_cmake += " -DCMAKE_CXX_COMPILER=clang++"
+                for lang in ["C", "CXX"]:
                     self.cmd_cmake += (
                         ' -DCMAKE_{}_FLAGS="-fno-omit-frame-pointer'
-                        ' -fsanitize={}"'.format(lang, sanitizer))
-            elif preset == 'install':
-                self.cmd_cmake += ' -DCMAKE_INSTALL_PREFIX=/tmp/_install'
-                self.cmd_test = 'make install'
-                self.cmd_post = 'find /tmp/_install -type f'
-            elif preset == 'cpack':
-                self.cmd_test = 'cpack'
-            elif preset == 'coverage':
-                for lang in ['C', 'CXX']:
-                    self.cmd_cmake += (
-                        ' -DCMAKE_{}_FLAGS=--coverage'.format(lang))
+                        ' -fsanitize={}"'.format(lang, sanitizer)
+                    )
+            elif preset == "install":
+                self.cmd_cmake += " -DCMAKE_INSTALL_PREFIX=/tmp/_install"
+                self.cmd_test = "make install"
+                self.cmd_post = "find /tmp/_install -type f"
+            elif preset == "cpack":
+                self.cmd_test = "cpack"
+            elif preset == "coverage":
+                for lang in ["C", "CXX"]:
+                    self.cmd_cmake += " -DCMAKE_{}_FLAGS=--coverage".format(lang)
                 self.cmd_post = (
-                    'lcov --compat-libtool --capture'
-                    ' --directory .'
-                    ' | sed s@^SF:%s/@SF:@ > lcov.info'
-                    ' && lcov --list lcov.info'
-                    % os.getcwd())
-            elif preset == 'valgrind':
-                self.cmd_test += ' -DExperimentalMemCheck'
+                    "lcov --compat-libtool --capture"
+                    " --directory ."
+                    " | sed s@^SF:%s/@SF:@ > lcov.info"
+                    " && lcov --list lcov.info" % os.getcwd()
+                )
+            elif preset == "valgrind":
+                self.cmd_test += " -DExperimentalMemCheck"
             else:
                 # Static analysis presets
-                for lang in ['C', 'CXX']:
-                    if preset == 'cppcheck':
+                for lang in ["C", "CXX"]:
+                    if preset == "cppcheck":
+                        self.cmd_cmake += " -DCMAKE_{}_CPPCHECK=cppcheck".format(lang)
+                        self.cmd_test = ""
+                    elif preset == "iwyu":
                         self.cmd_cmake += (
-                            ' -DCMAKE_{}_CPPCHECK=cppcheck'.format(lang))
-                        self.cmd_test = ''
-                    elif preset == 'iwyu':
-                        self.cmd_cmake += (
-                            ' -DCMAKE_{}_INCLUDE_WHAT_YOU_USE=iwyu'.format(
-                                lang))
-                        self.cmd_test = ('! grep -q'
-                                         ' "Warning: include-what-you-use"'
-                                         ' /tmp/build.log')
-                    elif preset == 'clang-tidy':
-                        self.cmd_cmake += (
-                            ' -DCMAKE_{}_CLANG_TIDY=clang-tidy'.format(lang))
-                        self.cmd_test = ''
+                            " -DCMAKE_{}_INCLUDE_WHAT_YOU_USE=iwyu".format(lang)
+                        )
+                        self.cmd_test = (
+                            "! grep -q"
+                            ' "Warning: include-what-you-use"'
+                            " /tmp/build.log"
+                        )
+                    elif preset == "clang-tidy":
+                        self.cmd_cmake += " -DCMAKE_{}_CLANG_TIDY=clang-tidy".format(
+                            lang
+                        )
+                        self.cmd_test = ""
 
         # The other inputs that override presets:
 
         # Build
-        cmd_build_override = self.extenv.get('INPUT_BUILD_COMMAND')
+        cmd_build_override = self.extenv.get("INPUT_BUILD_COMMAND")
         if cmd_build_override:
             self.cmd_build = cmd_build_override
 
         # Test
-        cmd_test_override = self.extenv.get('INPUT_TEST_COMMAND')
+        cmd_test_override = self.extenv.get("INPUT_TEST_COMMAND")
         if cmd_test_override:
             self.cmd_test = cmd_test_override
 
         # Post
-        cmd_post_override = self.extenv.get('INPUT_POST_COMMAND')
+        cmd_post_override = self.extenv.get("INPUT_POST_COMMAND")
         if cmd_post_override:
             self.cmd_post = cmd_post_override
 
@@ -176,5 +179,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
