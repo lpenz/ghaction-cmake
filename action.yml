@@ -6,6 +6,9 @@ branding:
   icon: 'compass'
   color: 'blue'
 inputs:
+  pre_command:
+    description: 'Command to run at the start of the setup phase'
+    default: ''
   dependencies_debian:
     description: 'Dependencies as Debian packages to install; used if defined'
     default: ''

@@ -74,27 +74,31 @@ class Entrypoint(object):
         dependencies = self.extenv.get("INPUT_DEPENDENCIES_DEBIAN")
         if not dependencies:
             return True
-        with ghgroup("Installing dependencies"):
-            if not self.runcmdsu("apt-get update"):
-                print("::error title=dependencies::Error in apt-get update")
-                return False
-            if not self.runcmdsu(
-                "apt-get install --no-install-recommends -y {}".format(dependencies)
-            ):
-                print("::error title=dependencies::Error in apt-get install")
-                return False
+        if not self.runcmdsu("apt-get update"):
+            print("::error title=dependencies::Error in apt-get update")
+            return False
+        if not self.runcmdsu(
+            "apt-get install --no-install-recommends -y {}".format(dependencies)
+        ):
+            print("::error title=dependencies::Error in apt-get install")
+            return False
         return True
 
     def main(self):
         # Setup phase can be executed immediately, it ignores presets:
-        # Dependencies:
-        if not self.dependencies():
-            return False
-        # Directory:
-        directory = self.extenv.get("INPUT_WORKING-DIRECTORY")
-        if directory:
-            print("+ cd " + directory)
-            os.chdir(directory)
+        with ghgroup("setup"):
+            # Directory:
+            directory = self.extenv.get("INPUT_WORKING-DIRECTORY")
+            if directory:
+                print("+ cd " + directory)
+                os.chdir(directory)
+            # pre_command:
+            cmd_pre = self.extenv.get("INPUT_PRE_COMMAND")
+            if cmd_pre:
+                self.runcmd(cmd_pre)
+            # Dependencies:
+            if not self.dependencies():
+                return False
 
         # Defaults, affected by presets:
         self.cmd_cmake = "cmake . "

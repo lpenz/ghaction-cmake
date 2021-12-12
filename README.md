@@ -33,18 +33,27 @@ Set a preset, more information on the [Presets](#presets) section below.
 
 - Phase: can changes the default command of any number of phases.
 
-### `dependencies_debian`
-
-Project dependencies as Debian packages to install in the container,
-separated by spaces.
-
-- Phase: *setup*
-- Preset behavior: unaffected.
-
 ### `working-directory`
 
 Use this directory as the source dir for cmake. Mostly used when the
 cmake project is in a subdirectory of the repository.
+
+- Phase: *setup*
+- Preset behavior: unaffected.
+
+### `pre_command`
+
+Custom command to run before dependencies are installed. Use this to
+add third-party Debian repositories or increment the setup phase in
+other ways.
+
+- Phase: *setup*
+- Preset behavior: unaffected.
+
+### `dependencies_debian`
+
+Project dependencies as Debian packages to install in the container,
+separated by spaces.
 
 - Phase: *setup*
 - Preset behavior: unaffected.
