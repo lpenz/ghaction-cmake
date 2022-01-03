@@ -39,6 +39,15 @@ jobs:
   dockerhub:
     needs: [ omnilint, test ]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - { platform: 'linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64', label: '' }
+          - { platform: linux/386, label: -386 }
+          - { platform: linux/amd64, label: -amd64 }
+          - { platform: linux/arm/v6, label: -armv6 }
+          - { platform: linux/arm/v7, label: -armv7 }
+          - { platform: linux/arm64, label: -arm64 }
     steps:
       - uses: actions/checkout@v2
       - id: version
@@ -52,6 +61,5 @@ jobs:
       - uses: docker/build-push-action@v2
         with:
           push: ${{ steps.version.outputs.version_docker_ci != 'null' }}
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
-          tags: ${{ github.repository }}:${{ steps.version.outputs.version_docker_ci }}
-
+          platforms: ${{ matrix.arch.platform }}
+          tags: ${{ github.repository }}:${{ steps.version.outputs.version_docker_ci }}${{ matrix.arch.label }}
