@@ -1,4 +1,5 @@
-FROM debian:bullseye
+ARG BASE=debian:bullseye
+FROM ${BASE}
 
 # install debian packages:
 ENV DEBIAN_FRONTEND=noninteractive
