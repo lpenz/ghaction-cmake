@@ -21,6 +21,7 @@ RUN set -x -e; \
         # GCC compilers
         gcc-5 gcc-6 gcc-7 gcc-8 gcc-9 gcc-10 \
         g++-5 g++-6 g++-7 g++-8 g++-9 g++-10 \
+        gcovr \
         # Clang compilers
         clang-4.0 clang-5.0 clang-6.0 clang-7 clang-8 clang-9 clang-10 clang-11 \
         # Clang tools
@@ -36,6 +37,8 @@ RUN set -x -e; \
         libboost1.74-dev \
         # zlib needed for some boost components
         zlib1g-dev \
+        # openssl needed for some users
+        libssl-dev \
         # git for listing files in changes
         git \
         ; \
