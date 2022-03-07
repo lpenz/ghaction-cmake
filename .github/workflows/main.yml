@@ -5,6 +5,7 @@ on:
     branches:
       - master
   pull_request:
+  create:
 jobs:
   build-docker:
     name: "Build and Publish rainlabs/cmake-quality-action"
