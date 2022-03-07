@@ -2,7 +2,9 @@
 name: CI
 on: 
   push:
-  create:
+    branches:
+      - master
+  pull_request:
 jobs:
   build-docker:
     name: "Build and Publish rainlabs/cmake-quality-action"
