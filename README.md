@@ -170,7 +170,7 @@ The table below summarizes the changes specific to each preset:
 <td></td>
 </tr>
 <tr>
-<td>clang&#8209;sanitizer&#8209;&lt;sanitizer&gt;</td>
+<td>clang&#8209;sanitize&#8209;&lt;sanitizer&gt;</td>
 <td>
 <pre>-DCMAKE_C/CXX_COMPILER=clang/clang++
 -DCMAKE_C/CXX_FLAGS=-fno-omit-frame-pointer -fsanitize=&lt;sanitizer&gt;</pre>
@@ -217,14 +217,15 @@ jobs:
     strategy:
         matrix:
           compiler:
-            - gcc
-            - clang
+            - [gcc, g++]
+            - [clang, clang++]
     runs-on: ubuntu-latest
     # We can use cmakeflags for this, or we can just use
     # regular environment variables, as they are already
     # supported by github actions:
     env:
-      - CC: ${{ matrix.compiler }}
+      - CC: ${{ matrix.compiler[0] }}
+      - CXX: ${{ matrix.compiler[1] }}
     steps:
       - uses: actions/checkout@v2
       - uses: docker://lpenz/ghaction-cmake:0.16
@@ -285,11 +286,11 @@ jobs:
     strategy:
         matrix:
           preset:
-            - clang-sanitizer-address
-            - clang-sanitizer-memory
-            - clang-sanitizer-undefined
-            - clang-sanitizer-dataflow
-            - clang-sanitizer-safe-stack
+            - clang-sanitize-address
+            - clang-sanitize-memory
+            - clang-sanitize-undefined
+            - clang-sanitize-dataflow
+            - clang-sanitize-safe-stack
             - valgrind
     runs-on: ubuntu-latest
     steps:
