@@ -14,11 +14,11 @@ jobs:
             - cppcheck
             - install
             - clang-tidy
-            - clang-sanitizer-address
-            - clang-sanitizer-memory
-            - clang-sanitizer-undefined
-            - clang-sanitizer-dataflow
-            - clang-sanitizer-safe-stack
+            - clang-sanitize-address
+            - clang-sanitize-memory
+            - clang-sanitize-undefined
+            - clang-sanitize-dataflow
+            - clang-sanitize-safe-stack
             - valgrind
             - cpack
             - coverage

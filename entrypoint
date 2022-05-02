@@ -16,6 +16,11 @@ def ghgroup(group):
     print("::endgroup::")
 
 
+def error(title, msg):
+    print("::error title={}::{}".format(title, msg))
+    sys.stderr.write("> {}\n".format(msg))
+
+
 class Entrypoint(object):
     def __init__(self, extenv):
         self.extenv = extenv
@@ -44,7 +49,7 @@ class Entrypoint(object):
                     logfd.write(line)
         p.wait()
         if p.returncode != 0:
-            sys.stderr.write("> Error {} while running {}\n".format(p.returncode, cmd))
+            error("popen", "> Error {} while running {}".format(p.returncode, cmd))
             return False
         return True
 
@@ -86,7 +91,7 @@ class Entrypoint(object):
 
     def main(self):
         # Setup phase can be executed immediately, it ignores presets:
-        with ghgroup("setup"):
+        with ghgroup("Setup"):
             # Directory:
             directory = self.extenv.get("INPUT_WORKING-DIRECTORY")
             if directory:
@@ -135,26 +140,27 @@ class Entrypoint(object):
                 )
             elif preset == "valgrind":
                 self.cmd_test += " -DExperimentalMemCheck"
-            else:
-                # Static analysis presets
+            # Static analysis presets
+            elif preset == "cppcheck":
                 for lang in ["C", "CXX"]:
-                    if preset == "cppcheck":
-                        self.cmd_cmake += " -DCMAKE_{}_CPPCHECK=cppcheck".format(lang)
-                        self.cmd_test = ""
-                    elif preset == "iwyu":
-                        self.cmd_cmake += (
-                            " -DCMAKE_{}_INCLUDE_WHAT_YOU_USE=iwyu".format(lang)
-                        )
-                        self.cmd_test = (
-                            "! grep -q"
-                            ' "Warning: include-what-you-use"'
-                            " /tmp/build.log"
-                        )
-                    elif preset == "clang-tidy":
-                        self.cmd_cmake += " -DCMAKE_{}_CLANG_TIDY=clang-tidy".format(
-                            lang
-                        )
-                        self.cmd_test = ""
+                    self.cmd_cmake += " -DCMAKE_{}_CPPCHECK=cppcheck".format(lang)
+                self.cmd_test = ""
+            elif preset == "iwyu":
+                for lang in ["C", "CXX"]:
+                    self.cmd_cmake += " -DCMAKE_{}_INCLUDE_WHAT_YOU_USE=iwyu".format(
+                        lang
+                    )
+                self.cmd_test = (
+                    "! grep -q" ' "Warning: include-what-you-use"' " /tmp/build.log"
+                )
+            elif preset == "clang-tidy":
+                for lang in ["C", "CXX"]:
+                    self.cmd_cmake += " -DCMAKE_{}_CLANG_TIDY=clang-tidy".format(lang)
+                self.cmd_test = ""
+            else:
+                error("preset", "Error: invalid preset {}".format(preset))
+                sys.exit(1)
+            print("Preset is {}".format(preset))
 
         # The other inputs that override presets:
 
