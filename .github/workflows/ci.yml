@@ -79,6 +79,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        if: ${{ steps.version.outputs.version_docker_ci != 'null' }}
       - uses: docker/build-push-action@v2
         with:
           build-args: BASE=${{ matrix.variant.base }}
