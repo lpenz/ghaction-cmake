@@ -9,7 +9,7 @@ RUN set -e -x; \
         # infra
         ca-certificates python3-yaml \
         # build
-        cmake pkg-config make gcc g++ \
+        cmake pkg-config make gcc g++ meson ninja-build \
         # coverage report
         curl lcov \
         # clang
