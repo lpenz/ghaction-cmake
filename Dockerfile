@@ -4,6 +4,7 @@ FROM ${BASE}
 # install debian packages:
 ENV DEBIAN_FRONTEND=noninteractive
 RUN set -e -x; \
+    echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         # infra
