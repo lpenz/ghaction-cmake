@@ -7,6 +7,7 @@ import sys
 import os
 import subprocess
 from contextlib import contextmanager
+from enum import Enum
 
 
 @contextmanager
@@ -19,6 +20,11 @@ def ghgroup(group):
 def error(title, msg):
     print("::error title={}::{}".format(title, msg))
     sys.stderr.write("> {}\n".format(msg))
+
+
+class CompilerGroup(Enum):
+    gcc = ('gcc', 'g++')
+    clang = ('clang', 'clang++')
 
 
 class Entrypoint(object):
@@ -89,7 +95,7 @@ class Entrypoint(object):
             return False
         return True
 
-    def main(self):
+    def parse(self):
         # Setup phase can be executed immediately, it ignores presets:
         with ghgroup("Setup"):
             # Directory:
@@ -105,27 +111,53 @@ class Entrypoint(object):
             if not self.dependencies():
                 return False
 
+        if os.path.exists("meson.build"):
+            build_system = "meson"
+        else:
+            build_system = "cmake"
+
         # Defaults, affected by presets:
-        self.cmd_cmake = "cmake . "
-        self.cmd_cmake += self.extenv.get("INPUT_CMAKEFLAGS", "")
-        self.cmd_build = "make VERBOSE=1"
-        self.cmd_test = "ctest --output-on-failure ."
+        if build_system == "meson":
+            self.cmd_cmake = "meson build -Dtests=enabled"
+            self.cmd_build = "ninja -C build"
+            self.cmd_test = "ninja test -C build"
+        else:  # build_system "cmake":
+            self.cmd_cmake = "cmake . "
+            self.cmd_cmake += self.extenv.get("INPUT_CMAKEFLAGS", "")
+            self.cmd_build = "make VERBOSE=1"
+            self.cmd_test = "ctest --output-on-failure build"
 
         # Presets, overriding or complementing defaults:
         preset = self.extenv.get("INPUT_PRESET")
         if preset:
-            if preset.startswith("clang-sanitize-"):
-                sanitizer = re.match("clang-sanitize-(.*)", preset).group(1)
-                self.cmd_cmake += " -DCMAKE_C_COMPILER=clang"
-                self.cmd_cmake += " -DCMAKE_CXX_COMPILER=clang++"
-                for lang in ["C", "CXX"]:
-                    self.cmd_cmake += (
-                        ' -DCMAKE_{}_FLAGS="-fno-omit-frame-pointer'
-                        ' -fsanitize={}"'.format(lang, sanitizer)
-                    )
+            if preset.split("-")[:2] in [["clang", "sanitize"], ["gcc", "sanitize"]]:
+                match = re.match("(.*)-sanitize-(.*)", preset)
+                compilers = dict(CompilerGroup.__members__.items())[match.group(1)]
+                sanitizer = match.group(2)
+                if build_system == "cmake":
+                    self.cmd_cmake += " -DCMAKE_C_COMPILER={}".format(compilers.value[0])
+                    self.cmd_cmake += " -DCMAKE_CXX_COMPILER={}".format(compilers.value[1])
+                    for lang in ["C", "CXX"]:
+                        self.cmd_cmake += (
+                            ' -DCMAKE_{}_FLAGS="-fno-omit-frame-pointer'
+                            ' -fsanitize={}"'.format(lang, sanitizer)
+                        )
+                else:
+                    self.cmd_cmake = "CC={} {}".format(compilers.value[0], self.cmd_cmake)
+                    self.cmd_cmake = "CXX={} {}".format(compilers.value[1], self.cmd_cmake)
+                    for lang in ["C", "CXX"]:
+                        self.cmd_cmake = (
+                            '{}FLAGS="-fno-omit-frame-pointer'
+                            ' -fsanitize={}" {}'.format(lang, sanitizer, self.cmd_cmake)
+                        )
+
             elif preset == "install":
-                self.cmd_cmake += " -DCMAKE_INSTALL_PREFIX=/tmp/_install"
-                self.cmd_test = "make install"
+                if build_system == "cmake":
+                    self.cmd_cmake += " -DCMAKE_INSTALL_PREFIX=/tmp/_install"
+                    self.cmd_test = "make install"
+                elif build_system == "meson":
+                    self.cmd_cmake += " --destdir=/tmp/_install"
+                    self.cmd_test = "ninja install -C build"
                 self.cmd_post = "find /tmp/_install -type f"
             elif preset == "cpack":
                 self.cmd_test = "cpack"
@@ -179,7 +211,8 @@ class Entrypoint(object):
         if cmd_post_override:
             self.cmd_post = cmd_post_override
 
-        # Run
+    def main(self):
+        self.parse()
         return self.run()
 
 

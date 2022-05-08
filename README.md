@@ -118,6 +118,10 @@ The available presets are:
   [clang sanitizers](https://clang.llvm.org/docs/index.html) and
   run the tests.
   - *cmake*: append `-DCMAKE_C/CXX_COMPILER=clang/clang++ -DCMAKE_C/CXX_FLAGS=-fno-omit-frame-pointer -fsanitize=<sanitizer>` to `cmakeflags`.
+- *gcc-sanitize-&lt;sanitizer&gt;*: compile with one of the
+  [gcc sanitizers](https://devdocs.io/gcc~10/instrumentation-options) and
+  run the tests.
+  - *cmake*: append `-DCMAKE_C/CXX_COMPILER=gcc/g++ -DCMAKE_C/CXX_FLAGS=-fno-omit-frame-pointer -fsanitize=<sanitizer>` to `cmakeflags`.
 - *valgrind*: run the tests with [valgrind](https://valgrind.org/).
   - *test*: set default test phase to `ctest -DExperimentalMemCheck --output-on-failure .`
 - *cpack*: runs [cpack](https://cmake.org/cmake/help/latest/module/CPack.html)
