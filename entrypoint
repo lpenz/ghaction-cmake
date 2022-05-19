@@ -7,7 +7,11 @@ import sys
 import os
 import subprocess
 from contextlib import contextmanager
-from enum import Enum
+
+compiler_groups = {
+    "gcc": ("gcc", "g++"),
+    "clang": ("clang", "clang++"),
+}
 
 
 @contextmanager
@@ -20,11 +24,6 @@ def ghgroup(group):
 def error(title, msg):
     print("::error title={}::{}".format(title, msg))
     sys.stderr.write("> {}\n".format(msg))
-
-
-class CompilerGroup(Enum):
-    gcc = ('gcc', 'g++')
-    clang = ('clang', 'clang++')
 
 
 class Entrypoint(object):
@@ -120,12 +119,12 @@ class Entrypoint(object):
         # Presets, overriding or complementing defaults:
         preset = self.extenv.get("INPUT_PRESET")
         if preset:
-            if preset.split("-")[:2] in [["clang", "sanitize"], ["gcc", "sanitize"]]:
-                match = re.match("(.*)-sanitize-(.*)", preset)
-                compilers = dict(CompilerGroup.__members__.items())[match.group(1)]
+            match = re.match(f"({'|'.join(compiler_groups)})-sanitize-(.*)", preset)
+            if match:
+                compilers = compiler_groups[match.group(1)]
                 sanitizer = match.group(2)
-                self.cmd_cmake += " -DCMAKE_C_COMPILER={}".format(compilers.value[0])
-                self.cmd_cmake += " -DCMAKE_CXX_COMPILER={}".format(compilers.value[1])
+                self.cmd_cmake += " -DCMAKE_C_COMPILER={}".format(compilers[0])
+                self.cmd_cmake += " -DCMAKE_CXX_COMPILER={}".format(compilers[1])
                 for lang in ["C", "CXX"]:
                     self.cmd_cmake += (
                         ' -DCMAKE_{}_FLAGS="-fno-omit-frame-pointer'
