@@ -8,6 +8,11 @@ import os
 import subprocess
 from contextlib import contextmanager
 
+compiler_groups = {
+    "gcc": ("gcc", "g++"),
+    "clang": ("clang", "clang++"),
+}
+
 
 @contextmanager
 def ghgroup(group):
@@ -89,7 +94,7 @@ class Entrypoint(object):
             return False
         return True
 
-    def main(self):
+    def parse(self):
         # Setup phase can be executed immediately, it ignores presets:
         with ghgroup("Setup"):
             # Directory:
@@ -114,10 +119,12 @@ class Entrypoint(object):
         # Presets, overriding or complementing defaults:
         preset = self.extenv.get("INPUT_PRESET")
         if preset:
-            if preset.startswith("clang-sanitize-"):
-                sanitizer = re.match("clang-sanitize-(.*)", preset).group(1)
-                self.cmd_cmake += " -DCMAKE_C_COMPILER=clang"
-                self.cmd_cmake += " -DCMAKE_CXX_COMPILER=clang++"
+            match = re.match(f"({'|'.join(compiler_groups)})-sanitize-(.*)", preset)
+            if match:
+                compilers = compiler_groups[match.group(1)]
+                sanitizer = match.group(2)
+                self.cmd_cmake += " -DCMAKE_C_COMPILER={}".format(compilers[0])
+                self.cmd_cmake += " -DCMAKE_CXX_COMPILER={}".format(compilers[1])
                 for lang in ["C", "CXX"]:
                     self.cmd_cmake += (
                         ' -DCMAKE_{}_FLAGS="-fno-omit-frame-pointer'
@@ -179,7 +186,8 @@ class Entrypoint(object):
         if cmd_post_override:
             self.cmd_post = cmd_post_override
 
-        # Run
+    def main(self):
+        self.parse()
         return self.run()
 
 
