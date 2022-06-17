@@ -21,8 +21,8 @@ RUN set -x -e; \
         # build
         cmake pkg-config make ninja-build \
         # GCC compilers
-        gcc-5 gcc-6 gcc-7 gcc-8 gcc-9 gcc-10 \
-        g++-5 g++-6 g++-7 g++-8 g++-9 g++-10 \
+        gcc-5 gcc-6 gcc-7 gcc-8 gcc-9 gcc-10 gcc-11 gcc-12\
+        g++-5 g++-6 g++-7 g++-8 g++-9 g++-10 gcc-11 gcc-12\
         gcovr \
         # Clang compilers
         clang-4.0 clang-5.0 clang-6.0 clang-7 clang-8 clang-9 clang-10 clang-11 clang-12 clang-13\
