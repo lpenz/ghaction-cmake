@@ -25,12 +25,12 @@ RUN set -x -e; \
         g++-5 g++-6 g++-7 g++-8 g++-9 g++-10 gcc-11 gcc-12\
         gcovr \
         # Clang compilers
-        clang-4.0 clang-5.0 clang-6.0 clang-7 clang-8 clang-9 clang-10 clang-11 clang-12 clang-13\
+        clang-4.0 clang-5.0 clang-6.0 clang-7 clang-8 clang-9 clang-10 clang-11 clang-12 clang-13 clang-14\
         # Clang tools
-        clang-tidy-4.0 clang-tidy-5.0 clang-tidy-6.0 clang-tidy-7 clang-tidy-8 clang-tidy-9 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tidy-13 \
-        clang-format-4.0 clang-format-5.0 clang-format-6.0 clang-format-7 clang-format-8 clang-format-9 clang-format-10 clang-format-11 clang-format-12 clang-format-13 \
+        clang-tidy-4.0 clang-tidy-5.0 clang-tidy-6.0 clang-tidy-7 clang-tidy-8 clang-tidy-9 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tidy-13 clang-tidy-14\
+        clang-format-4.0 clang-format-5.0 clang-format-6.0 clang-format-7 clang-format-8 clang-format-9 clang-format-10 clang-format-11 clang-format-12 clang-format-13 clang-format-14 \
         # LLVM
-        llvm-4.0 llvm-5.0 llvm-6.0 llvm-7 llvm-8 llvm-9 llvm-10 llvm-11 llvm-12 llvm-13 \
+        llvm-4.0 llvm-5.0 llvm-6.0 llvm-7 llvm-8 llvm-9 llvm-10 llvm-11 llvm-12 llvm-13 llvm-14 \
         # Coverage report upload
         curl \
         # ctest -D ExperimentalMemCheck
