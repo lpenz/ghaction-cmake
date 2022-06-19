@@ -1,0 +1,172 @@
+---
+name: cmake
+on:
+  workflow_call:
+    inputs:
+      coveralls:
+        required: false
+        type: boolean
+        default: false
+      codecov:
+        required: false
+        type: boolean
+        default: false
+      iwyu:
+        required: false
+        type: boolean
+        default: true
+      install:
+        required: false
+        type: boolean
+        default: true
+      cpack:
+        required: false
+        type: boolean
+        default: true
+      packagecloud:
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      PACKAGECLOUD_TOKEN:
+        required: false
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://lpenz/ghaction-cmake:0.19
+        with:
+          preset: coverage
+      - uses: coverallsapp/github-action@master
+        if: inputs.coveralls
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: lcov.info
+      - uses: codecov/codecov-action@v1
+        if: inputs.codecov
+        with:
+          fail_ci_if_error: true
+  lint:
+    strategy:
+        matrix:
+          preset: [ cppcheck, clang-tidy ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://lpenz/ghaction-cmake:0.19
+        with:
+          preset: ${{ matrix.preset }}
+  iwyu:
+    if: inputs.iwyu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://lpenz/ghaction-cmake:0.19
+        with:
+          preset: iwyu
+  test:
+    strategy:
+        matrix:
+          preset:
+            - clang-sanitize-address
+            - clang-sanitize-memory
+            - clang-sanitize-undefined
+            - clang-sanitize-dataflow
+            - clang-sanitize-safe-stack
+            - valgrind
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://lpenz/ghaction-cmake:0.19
+        with:
+          preset: ${{ matrix.preset }}
+  install:
+    runs-on: ubuntu-latest
+    if: inputs.install
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://lpenz/ghaction-cmake:0.19
+        with:
+          preset: install
+  cpack:
+    runs-on: ubuntu-latest
+    if: inputs.cpack
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: docker://lpenz/ghaction-cmake:0.19
+        with:
+          preset: cpack
+  packagecloud:
+    if: inputs.packagecloud
+    needs: [ lint, test, cpack ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant:
+          - image: 386
+            distro: debian
+            version: buster
+          - image: amd64
+            distro: debian
+            version: buster
+          - image: armv6
+            distro: debian
+            version: buster
+          - image: armv7
+            distro: debian
+            version: buster
+          - image: arm64
+            distro: debian
+            version: buster
+          - image: raspbian-buster-armhf
+            distro: raspbian
+            version: buster
+          - image: raspbian-bullseye-armhf
+            distro: raspbian
+            version: bullseye
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker://lpenz/ghaction-cmake:0.19-386
+        if: matrix.variant.image == '386'
+        with:
+          preset: cpack
+      - uses: docker://lpenz/ghaction-cmake:0.19-amd64
+        if: matrix.variant.image == 'amd64'
+        with:
+          preset: cpack
+      - uses: docker://lpenz/ghaction-cmake:0.19-armv6
+        if: matrix.variant.image == 'armv6'
+        with:
+          preset: cpack
+      - uses: docker://lpenz/ghaction-cmake:0.19-armv7
+        if: matrix.variant.image == 'armv7'
+        with:
+          preset: cpack
+      - uses: docker://lpenz/ghaction-cmake:0.19-arm64
+        if: matrix.variant.image == 'arm64'
+        with:
+          preset: cpack
+      - uses: docker://lpenz/ghaction-cmake:0.19-raspbian-buster-armhf
+        if: matrix.variant.image == 'raspbian-buster-armhf'
+        with:
+          preset: cpack
+      - uses: docker://lpenz/ghaction-cmake:0.19-raspbian-bullseye-armhf
+        if: matrix.variant.image == 'raspbian-bullseye-armhf'
+        with:
+          preset: cpack
+      - run: |
+          for f in *.deb; do ls -l "$f"; dpkg --info "$f"; done
+      - id: version
+        uses: docker://lpenz/ghaction-version-gen:0.8.0
+      - uses: docker://lpenz/ghaction-packagecloud:0.4
+        if: steps.version.outputs.version_commit != ''
+        with:
+          repository: ${{ matrix.variant.distro }}/${{ matrix.variant.distro }}/${{ matrix.variant.version }}
+        env:
+          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
