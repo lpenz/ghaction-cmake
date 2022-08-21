@@ -45,7 +45,7 @@ jobs:
         with:
           preset: ${{ matrix.preset }}
           working-directory: execpermfix
-  dockerhub:
+  publish-dockerhub:
     needs: [ omnilint, test ]
     runs-on: ubuntu-latest
     strategy:
@@ -95,3 +95,16 @@ jobs:
           push: ${{ steps.version.outputs.version_docker_ci != 'null' }}
           platforms: ${{ matrix.variant.platform }}
           tags: ${{ github.repository }}:${{ steps.version.outputs.version_docker_ci }}${{ matrix.variant.label }}
+  publish-github-release:
+    needs: [ publish-dockerhub ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - id: version
+        uses: docker://lpenz/ghaction-version-gen:0.10.0
+      - name: publish github release
+        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        if: steps.version.outputs.version_tagged != ''
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
