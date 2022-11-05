@@ -51,11 +51,11 @@ jobs:
     strategy:
       matrix:
         variant:
-          # Default
+          # Global default: Debian Bullseye
           - base: debian:bullseye
             platform: 'linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64'
             label: ''
-          # Tag each platform:
+          # Global default platforms: Debian Bullseye
           - base: debian:bullseye
             platform: linux/386
             label: -386
@@ -71,13 +71,27 @@ jobs:
           - base: debian:bullseye
             platform: linux/arm64
             label: -arm64
-          # Raspbian:
-          - base: lpenz/raspbian-buster-armhf
+          # Ubuntu Focal platforms:
+          - base: ubuntu:focal
+            platform: linux/amd64
+            label: -ubuntu-focal-amd64
+          - base: ubuntu:focal
             platform: linux/arm/v7
-            label: -raspbian-buster-armhf
+            label: -ubuntu-focal-armv7
+          - base: ubuntu:focal
+            platform: linux/arm64/v8
+            label: -ubuntu-focal-arm64
+          # Raspbian Bullseye:
           - base: lpenz/raspbian-bullseye-armhf
-            platform: linux/arm/v7
+            platform: linux/armhf
             label: -raspbian-bullseye-armhf
+          # Raspberry Pi OS Bullseye:
+          - base: lpenz/rpios-bullseye-armhf
+            platform: linux/armhf
+            label: -rpios-bullseye-armhf
+          - base: lpenz/rpios-bullseye-arm64
+            platform: linux/arm64
+            label: -rpios-bullseye-arm64
     steps:
       - uses: actions/checkout@v3.1.0
       - id: version
