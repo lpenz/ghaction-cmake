@@ -22,13 +22,13 @@ RUN set -e -x; \
         # cpack
         file dpkg-dev \
         # base system (su)
-        util-linux
-
-# ctest -D ExperimentalMemCheck; may not work in all architectures
-RUN apt-get install -y --no-install-recommends valgrind || true
-
-# setup su for dep installation
-RUN sed -i '/pam_rootok.so$/aauth sufficient pam_permit.so' /etc/pam.d/su
+        util-linux; \
+    # ctest -D ExperimentalMemCheck; may not work in all architectures
+    apt-get install -y --no-install-recommends valgrind || true; \
+    # setup su for dep installation
+    sed -i '/pam_rootok.so$/aauth sufficient pam_permit.so' /etc/pam.d/su; \
+    # make git trust all directories to avoid issues in CI
+    git config --system --add safe.directory '*'
 
 ADD entrypoint /usr/local/bin/entrypoint
 CMD ["/usr/local/bin/entrypoint"]
