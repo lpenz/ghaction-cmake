@@ -71,16 +71,58 @@ jobs:
           - base: debian:bullseye
             platform: linux/arm64
             label: -arm64
-          # Ubuntu Focal platforms:
-          - base: ubuntu:focal
+          # Debian Bullseye platforms:
+          - base: debian:bullseye
+            platform: linux/386
+            label: -debian-bullseye-386
+          - base: debian:bullseye
             platform: linux/amd64
-            label: -ubuntu-focal-amd64
-          - base: ubuntu:focal
+            label: -debian-bullseye-amd64
+          - base: debian:bullseye
+            platform: linux/arm/v6
+            label: -debian-bullseye-armv6
+          - base: debian:bullseye
             platform: linux/arm/v7
-            label: -ubuntu-focal-armv7
-          - base: ubuntu:focal
+            label: -debian-bullseye-armv7
+          - base: debian:bullseye
+            platform: linux/arm64
+            label: -debian-bullseye-arm64
+          # Debian Bookworm platforms:
+          - base: debian:bookworm
+            platform: linux/386
+            label: -debian-bookworm-386
+          - base: debian:bookworm
+            platform: linux/amd64
+            label: -debian-bookworm-amd64
+          - base: debian:bookworm
+            platform: linux/arm/v6
+            label: -debian-bookworm-armv6
+          - base: debian:bookworm
+            platform: linux/arm/v7
+            label: -debian-bookworm-armv7
+          - base: debian:bookworm
+            platform: linux/arm64
+            label: -debian-bookworm-arm64
+          # Ubuntu Jammy platforms:
+          - base: ubuntu:jammy
+            platform: linux/amd64
+            label: -ubuntu-jammy-amd64
+          - base: ubuntu:jammy
+            platform: linux/arm/v7
+            label: -ubuntu-jammy-armv7
+          - base: ubuntu:jammy
             platform: linux/arm64/v8
-            label: -ubuntu-focal-arm64
+            label: -ubuntu-jammy-arm64
+          # Ubuntu Kinetic platforms:
+          - base: ubuntu:kinetic
+            platform: linux/amd64
+            label: -ubuntu-kinetic-amd64
+          - base: ubuntu:kinetic
+            platform: linux/arm/v7
+            label: -ubuntu-kinetic-armv7
+          - base: ubuntu:kinetic
+            platform: linux/arm64/v8
+            label: -ubuntu-kinetic-arm64
           # Raspbian Bullseye:
           - base: lpenz/raspbian-bullseye-armhf
             platform: linux/armhf
