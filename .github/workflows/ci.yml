@@ -103,6 +103,22 @@ jobs:
           - base: debian:bookworm
             platform: linux/arm64
             label: -debian-bookworm-arm64
+          # Debian Trixie platforms:
+          - base: debian:trixie
+            platform: linux/386
+            label: -debian-trixie-386
+          - base: debian:trixie
+            platform: linux/amd64
+            label: -debian-trixie-amd64
+          - base: debian:trixie
+            platform: linux/arm/v6
+            label: -debian-trixie-armv6
+          - base: debian:trixie
+            platform: linux/arm/v7
+            label: -debian-trixie-armv7
+          - base: debian:trixie
+            platform: linux/arm64
+            label: -debian-trixie-arm64
           # Ubuntu Jammy platforms:
           - base: ubuntu:jammy
             platform: linux/amd64
