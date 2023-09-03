@@ -23,6 +23,8 @@ RUN set -e -x; \
         file dpkg-dev \
         # base system (su)
         util-linux; \
+    # In bookworm we need libclang-rt-dev for asan, etc.
+    apt-get install -y --no-install-recommends libclang-rt-dev || true; \
     # ctest -D ExperimentalMemCheck; may not work in all architectures
     apt-get install -y --no-install-recommends valgrind || true; \
     # setup su for dep installation
