@@ -129,16 +129,19 @@ jobs:
           - base: ubuntu:jammy
             platform: linux/arm64/v8
             label: -ubuntu-jammy-arm64
-          # Ubuntu Kinetic platforms:
-          - base: ubuntu:kinetic
+          # Ubuntu Noble platforms:
+          - base: ubuntu:noble
             platform: linux/amd64
-            label: -ubuntu-kinetic-amd64
-          - base: ubuntu:kinetic
+            label: -ubuntu-noble-amd64
+          - base: ubuntu:noble
+            platform: linux/arm/v6
+            label: -ubuntu-noble-armv6
+          - base: ubuntu:noble
             platform: linux/arm/v7
-            label: -ubuntu-kinetic-armv7
-          - base: ubuntu:kinetic
+            label: -ubuntu-noble-armv7
+          - base: ubuntu:noble
             platform: linux/arm64/v8
-            label: -ubuntu-kinetic-arm64
+            label: -ubuntu-noble-arm64
           # Raspbian Bullseye:
           - base: lpenz/raspbian-bullseye-armhf
             platform: linux/armhf
