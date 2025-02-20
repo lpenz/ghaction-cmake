@@ -52,104 +52,122 @@ jobs:
       fail-fast: false
       matrix:
         variant:
-          # Global default: Debian Bullseye
-          - base: debian:bullseye
-            platform: 'linux/386,linux/amd64,linux/arm/v7,linux/arm64'
-            label: ''
-          # Global default platforms: Debian Bullseye
-          - base: debian:bullseye
-            platform: linux/386
-            label: -386
-          - base: debian:bullseye
-            platform: linux/amd64
-            label: -amd64
-          - base: debian:bullseye
-            platform: linux/arm/v7
-            label: -armv7
+          # # Global default: Debian Bullseye
+          # - base: debian:bullseye
+          #   platform: 'linux/386,linux/amd64,linux/arm/v7,linux/arm64'
+          #   label: ''
+          # # Global default platforms: Debian Bullseye
+          # - base: debian:bullseye
+          #   platform: linux/386
+          #   label: -386
+          # - base: debian:bullseye
+          #   platform: linux/amd64
+          #   label: -amd64
+          # - base: debian:bullseye
+          #   platform: linux/arm/v7
+          #   label: -armv7
           - base: debian:bullseye
             platform: linux/arm64
             label: -arm64
-          # Debian Bullseye platforms:
-          - base: debian:bullseye
-            platform: linux/386
-            label: -debian-bullseye-386
-          - base: debian:bullseye
-            platform: linux/amd64
-            label: -debian-bullseye-amd64
-          - base: debian:bullseye
-            platform: linux/arm/v7
-            label: -debian-bullseye-armv7
-          - base: debian:bullseye
-            platform: linux/arm64
-            label: -debian-bullseye-arm64
-          # Debian Bookworm platforms:
-          - base: debian:bookworm
-            platform: linux/386
-            label: -debian-bookworm-386
-          - base: debian:bookworm
-            platform: linux/amd64
-            label: -debian-bookworm-amd64
-          - base: debian:bookworm
-            platform: linux/arm/v6
-            label: -debian-bookworm-armv6
-          - base: debian:bookworm
-            platform: linux/arm/v7
-            label: -debian-bookworm-armv7
-          - base: debian:bookworm
-            platform: linux/arm64
-            label: -debian-bookworm-arm64
-          # Debian Trixie platforms:
-          - base: debian:trixie
-            platform: linux/386
-            label: -debian-trixie-386
-          - base: debian:trixie
-            platform: linux/amd64
-            label: -debian-trixie-amd64
-          - base: debian:trixie
-            platform: linux/arm/v6
-            label: -debian-trixie-armv6
-          - base: debian:trixie
-            platform: linux/arm/v7
-            label: -debian-trixie-armv7
-          - base: debian:trixie
-            platform: linux/arm64
-            label: -debian-trixie-arm64
-          # Ubuntu Jammy platforms:
-          - base: ubuntu:jammy
-            platform: linux/amd64
-            label: -ubuntu-jammy-amd64
-          - base: ubuntu:jammy
-            platform: linux/arm/v7
-            label: -ubuntu-jammy-armv7
-          - base: ubuntu:jammy
-            platform: linux/arm64/v8
-            label: -ubuntu-jammy-arm64
-          # Ubuntu Noble platforms:
-          - base: ubuntu:noble
-            platform: linux/amd64
-            label: -ubuntu-noble-amd64
-          - base: ubuntu:noble
-            platform: linux/arm/v7
-            label: -ubuntu-noble-armv7
-          - base: ubuntu:noble
-            platform: linux/arm64/v8
-            label: -ubuntu-noble-arm64
-          # Raspbian Bullseye:
-          - base: lpenz/raspbian-bullseye-armhf
-            platform: linux/armhf
-            label: -raspbian-bullseye-armhf
-          # Raspberry Pi OS Bullseye:
-          - base: lpenz/rpios-bullseye-armhf
-            platform: linux/armhf
-            label: -rpios-bullseye-armhf
-          - base: lpenz/rpios-bullseye-arm64
-            platform: linux/arm64
-            label: -rpios-bullseye-arm64
+          # # Debian Bullseye platforms:
+          # - base: debian:bullseye
+          #   platform: linux/386
+          #   label: -debian-bullseye-386
+          # - base: debian:bullseye
+          #   platform: linux/amd64
+          #   label: -debian-bullseye-amd64
+          # - base: debian:bullseye
+          #   platform: linux/arm/v7
+          #   label: -debian-bullseye-armv7
+          # - base: debian:bullseye
+          #   platform: linux/arm64
+          #   label: -debian-bullseye-arm64
+          # # Debian Bookworm platforms:
+          # - base: debian:bookworm
+          #   platform: linux/386
+          #   label: -debian-bookworm-386
+          # - base: debian:bookworm
+          #   platform: linux/amd64
+          #   label: -debian-bookworm-amd64
+          # - base: debian:bookworm
+          #   platform: linux/arm/v6
+          #   label: -debian-bookworm-armv6
+          # - base: debian:bookworm
+          #   platform: linux/arm/v7
+          #   label: -debian-bookworm-armv7
+          # - base: debian:bookworm
+          #   platform: linux/arm64
+          #   label: -debian-bookworm-arm64
+          # # Debian Trixie platforms:
+          # - base: debian:trixie
+          #   platform: linux/386
+          #   label: -debian-trixie-386
+          # - base: debian:trixie
+          #   platform: linux/amd64
+          #   label: -debian-trixie-amd64
+          # - base: debian:trixie
+          #   platform: linux/arm/v6
+          #   label: -debian-trixie-armv6
+          # - base: debian:trixie
+          #   platform: linux/arm/v7
+          #   label: -debian-trixie-armv7
+          # - base: debian:trixie
+          #   platform: linux/arm64
+          #   label: -debian-trixie-arm64
+          # # Ubuntu Jammy platforms:
+          # - base: ubuntu:jammy
+          #   platform: linux/amd64
+          #   label: -ubuntu-jammy-amd64
+          # - base: ubuntu:jammy
+          #   platform: linux/arm/v7
+          #   label: -ubuntu-jammy-armv7
+          # - base: ubuntu:jammy
+          #   platform: linux/arm64/v8
+          #   label: -ubuntu-jammy-arm64
+          # # Ubuntu Noble platforms:
+          # - base: ubuntu:noble
+          #   platform: linux/amd64
+          #   label: -ubuntu-noble-amd64
+          # - base: ubuntu:noble
+          #   platform: linux/arm/v7
+          #   label: -ubuntu-noble-armv7
+          # - base: ubuntu:noble
+          #   platform: linux/arm64/v8
+          #   label: -ubuntu-noble-arm64
+          # # Raspbian Bullseye:
+          # - base: lpenz/raspbian-bullseye-armhf
+          #   platform: linux/armhf
+          #   label: -raspbian-bullseye-armhf
+          # # Raspberry Pi OS Bullseye:
+          # - base: lpenz/rpios-bullseye-armhf
+          #   platform: linux/armhf
+          #   label: -rpios-bullseye-armhf
+          # - base: lpenz/rpios-bullseye-arm64
+          #   platform: linux/arm64
+          #   label: -rpios-bullseye-arm64
     steps:
       - uses: actions/checkout@v4.2.2
       - id: version
         uses: docker://lpenz/ghaction-version-gen:0.14.1
-      - uses: docker/setup-qemu-action@v3.4.0
+      # - uses: docker/setup-qemu-action@v3.4.0
+      - name: qemu fix from https://github.com/docker/buildx/issues/314
+        run: |
+          set -e -x;
+          sudo apt update;
+          sudo apt upgrade -y;
+          sudo apt-get install -y libpixman-1-dev make ninja-build libglib2.0-dev;
+          wget https://download.qemu.org/qemu-7.0.0.tar.xz;
+          tar xvJf qemu-7.0.0.tar.xz;
+          cd qemu-7.0.0;
+          ./configure;
+          make;
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes -c yes;
+        # run: |
+        #   set -e -x;
+        #   docker run --rm --privileged multiarch/qemu-user-static --reset -p yes -c yes;
+        #   docker pull tonistiigi/binfmt:latest;
+        #   docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-*;
+        #   docker run --privileged --rm tonistiigi/binfmt --install all
       - uses: docker/setup-buildx-action@v3.9.0
       - uses: docker/login-action@v3.3.0
         with:
