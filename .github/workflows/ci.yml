@@ -54,7 +54,7 @@ jobs:
         variant:
           # Global default: Debian Bullseye
           - base: debian:bullseye
-            platform: 'linux/386,linux/amd64,linux/arm/v7,linux/arm64'
+            platform: 'linux/386,linux/amd64,linux/arm/v7'
             label: ''
           # Global default platforms: Debian Bullseye
           - base: debian:bullseye
@@ -69,6 +69,7 @@ jobs:
           - base: debian:bullseye
             platform: linux/arm64
             label: -arm64
+            qemu: v6.2.0-26
           # Debian Bullseye platforms:
           - base: debian:bullseye
             platform: linux/386
@@ -82,6 +83,7 @@ jobs:
           - base: debian:bullseye
             platform: linux/arm64
             label: -debian-bullseye-arm64
+            qemu: v6.2.0-26
           # Debian Bookworm platforms:
           - base: debian:bookworm
             platform: linux/386
@@ -98,6 +100,7 @@ jobs:
           - base: debian:bookworm
             platform: linux/arm64
             label: -debian-bookworm-arm64
+            qemu: v6.2.0-26
           # Debian Trixie platforms:
           - base: debian:trixie
             platform: linux/386
@@ -124,6 +127,7 @@ jobs:
           - base: ubuntu:jammy
             platform: linux/arm64/v8
             label: -ubuntu-jammy-arm64
+            qemu: v6.2.0-26
           # Ubuntu Noble platforms:
           - base: ubuntu:noble
             platform: linux/amd64
@@ -145,11 +149,19 @@ jobs:
           - base: lpenz/rpios-bullseye-arm64
             platform: linux/arm64
             label: -rpios-bullseye-arm64
+            qemu: v6.2.0-26
     steps:
       - uses: actions/checkout@v4.2.2
       - id: version
         uses: docker://lpenz/ghaction-version-gen:0.14.1
       - uses: docker/setup-qemu-action@v3.4.0
+        if: matrix.variant.qemu == null
+      - name: install qemu 7.0.0-28
+        run: |
+          set -e -x;
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes -c yes;
+          docker pull tonistiigi/binfmt:qemu-${{ matrix.variant.qemu }}
+        if: matrix.variant.qemu
       - uses: docker/setup-buildx-action@v3.9.0
       - uses: docker/login-action@v3.3.0
         with:
