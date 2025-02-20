@@ -54,7 +54,7 @@ jobs:
         variant:
           # Global default: Debian Bullseye
           - base: debian:bullseye
-            platform: 'linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64'
+            platform: 'linux/386,linux/amd64,linux/arm/v7,linux/arm64'
             label: ''
           # Global default platforms: Debian Bullseye
           - base: debian:bullseye
@@ -63,9 +63,6 @@ jobs:
           - base: debian:bullseye
             platform: linux/amd64
             label: -amd64
-          - base: debian:bullseye
-            platform: linux/arm/v6
-            label: -armv6
           - base: debian:bullseye
             platform: linux/arm/v7
             label: -armv7
@@ -79,9 +76,6 @@ jobs:
           - base: debian:bullseye
             platform: linux/amd64
             label: -debian-bullseye-amd64
-          - base: debian:bullseye
-            platform: linux/arm/v6
-            label: -debian-bullseye-armv6
           - base: debian:bullseye
             platform: linux/arm/v7
             label: -debian-bullseye-armv7
@@ -134,9 +128,6 @@ jobs:
           - base: ubuntu:noble
             platform: linux/amd64
             label: -ubuntu-noble-amd64
-          - base: ubuntu:noble
-            platform: linux/arm/v6
-            label: -ubuntu-noble-armv6
           - base: ubuntu:noble
             platform: linux/arm/v7
             label: -ubuntu-noble-armv7
