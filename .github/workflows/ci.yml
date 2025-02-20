@@ -49,6 +49,7 @@ jobs:
     needs: [ omnilint, test ]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         variant:
           # Global default: Debian Bullseye
